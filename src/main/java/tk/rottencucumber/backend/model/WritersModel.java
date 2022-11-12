@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Blob;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -16,11 +17,13 @@ public class WritersModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
-    @Column(name = "slug")
+    @Column(name = "slug", nullable = false, unique = true)
     private String slug;
     @Lob
     @Column(name = "image")
     private Blob image;
+    @ManyToMany(mappedBy = "writers", cascade = CascadeType.REMOVE)
+    private Set<MoviesModel> movies;
 }
