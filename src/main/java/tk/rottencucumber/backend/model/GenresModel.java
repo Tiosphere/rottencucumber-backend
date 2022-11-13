@@ -1,13 +1,11 @@
 package tk.rottencucumber.backend.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@Setter
-@Getter
+@Data
 @Entity
 @Table(name="genres")
 public class GenresModel {

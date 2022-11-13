@@ -1,14 +1,12 @@
 package tk.rottencucumber.backend.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Blob;
 import java.util.Set;
 
-@Setter
-@Getter
+@Data
 @Entity
 @Table(name="directors")
 public class DirectorsModel {

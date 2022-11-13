@@ -1,14 +1,13 @@
 package tk.rottencucumber.backend.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Blob;
 import java.util.Set;
 
-@Setter
-@Getter
+
+@Data
 @Entity
 @Table(name="users")
 public class UsersModel {

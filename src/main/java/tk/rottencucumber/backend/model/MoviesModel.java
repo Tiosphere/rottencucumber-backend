@@ -1,15 +1,13 @@
 package tk.rottencucumber.backend.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Blob;
 import java.time.Year;
 import java.util.Set;
 
-@Setter
-@Getter
+@Data
 @Entity
 @Table(name="movies")
 public class MoviesModel {
@@ -42,12 +40,12 @@ public class MoviesModel {
     Set<PlatformsModel> platforms;
     @Column(name = "summary")
     private String summary;
-    @Column(name = "preview")
+    @Column(name = "preview", nullable = false)
     private String preview;
     @Lob
     @Column(name = "image")
     private Blob image;
-    @Column(name = "year")
+    @Column(name = "year", nullable = false)
     private Year year;
     //Reverse relations
     @OneToMany(mappedBy = "movie", cascade = CascadeType.REMOVE)
