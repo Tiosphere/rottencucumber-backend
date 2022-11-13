@@ -49,6 +49,7 @@ public class MoviesModel {
     private Blob image;
     @Column(name = "year")
     private Year year;
+    //Reverse relations
     @OneToMany(mappedBy = "movie", cascade = CascadeType.REMOVE)
     private Set<ReviewsModel> reviews;
 }

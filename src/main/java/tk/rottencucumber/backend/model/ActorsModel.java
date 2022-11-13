@@ -24,7 +24,7 @@ public class ActorsModel {
     @Lob
     @Column(name = "image")
     private Blob image;
-
+    //Reverse relations
     @ManyToMany(mappedBy = "actors", cascade = CascadeType.REMOVE)
     private Set<MoviesModel> movies;
 }

@@ -24,7 +24,7 @@ public class DirectorsModel {
     @Lob
     @Column(name = "image")
     private Blob image;
-
+    //Reverse relations
     @ManyToMany(mappedBy = "directors", cascade = CascadeType.REMOVE)
     private Set<MoviesModel> movies;
 }

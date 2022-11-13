@@ -20,6 +20,7 @@ public class LanguagesModel {
     private String name;
     @Column(name = "slug", nullable = false, unique = true)
     private String slug;
+    //Reverse relations
     @OneToMany(mappedBy = "language", cascade = CascadeType.REMOVE)
     private Set<MoviesModel> movies;
 }

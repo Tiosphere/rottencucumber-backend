@@ -28,6 +28,9 @@ public class UsersModel {
     private Blob image;
     @Column(name = "is_staff")
     private boolean is_staff;
+    //Reverse relations
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<ReviewsModel> reviews;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private Set<LikesModel> likes;
 }

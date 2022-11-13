@@ -20,7 +20,7 @@ public class GenresModel {
     private String name;
     @Column(name = "slug", nullable = false, unique = true)
     private String slug;
-
+    //Reverse relations
     @ManyToMany(mappedBy = "genres", cascade = CascadeType.REMOVE)
     private Set<MoviesModel> movies;
 }

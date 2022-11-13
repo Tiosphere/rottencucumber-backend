@@ -20,6 +20,7 @@ public class PlatformsModel {
     private String name;
     @Column(name = "slug", nullable = false, unique = true)
     private String slug;
+    //Reverse relations
     @ManyToMany(mappedBy = "platforms", cascade = CascadeType.REMOVE)
     private Set<MoviesModel> movies;
 }

@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -30,4 +31,7 @@ public class ReviewsModel {
     @Column(name = "created", nullable = false, updatable = false)
     @CreatedDate
     private LocalDateTime created;
+    //Reverse relations
+    @OneToMany(mappedBy = "review")
+    private Set<LikesModel> likes;
 }
