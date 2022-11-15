@@ -1,4 +1,4 @@
-package tk.rottencucumber.backend.security;
+package tk.rottencucumber.backend.authentication;
 
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
