@@ -26,11 +26,21 @@ public class UsersService {
         usersRepository.save(newUser);
     }
 
+    public void newPassword(UsersModel user, String password) {
+        String hash = passwordEncoder.encode(password);
+        user.setPassword(hash);
+        usersRepository.save(user);
+    }
+
     public UsersModel findByUsername(String username) {
         return usersRepository.findByUsername(username);
     }
 
     public UsersModel findByEmail(String email) {
         return usersRepository.findByEmail(email);
+    }
+
+    public UsersModel findByToken(String token) {
+        return usersRepository.findByPasswordEndingWith(token);
     }
 }

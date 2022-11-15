@@ -23,13 +23,6 @@ public class LoginController {
             e.printStackTrace();
             return "Username or password invalid";
         }
-//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-//        Authentication auth = authenticationManager.authenticate(authenticationToken);
-//        SecurityContext securityContext = SecurityContextHolder.getContext();
-//        securityContext.setAuthentication(auth);
-//        HttpSession session = request.getSession(true);
-//        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
-
     }
 
     @GetMapping

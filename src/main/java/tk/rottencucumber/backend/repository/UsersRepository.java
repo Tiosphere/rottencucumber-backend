@@ -9,4 +9,6 @@ public interface UsersRepository extends CrudRepository<UsersModel, Long>{
 
     UsersModel findByEmail(String email);
     UsersModel findByUsername(String username);
+
+    UsersModel findByPasswordEndingWith(String keyword);
 }
