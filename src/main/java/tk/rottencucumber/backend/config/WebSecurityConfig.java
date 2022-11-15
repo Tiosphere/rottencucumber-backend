@@ -31,12 +31,11 @@ public class WebSecurityConfig {
 //                .exceptionHandling().authenticationEntryPoint(new Json403EntryPoint())
 //                .and()
                 .build();
-
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new Argon2PasswordEncoder(32,128,4,16*1024,16);
+        return new Argon2PasswordEncoder(32,128,4,8*1024,12);
     }
 
     @Bean

@@ -20,6 +20,7 @@ public class LoginController {
             request.login(username, password);
             return "Successfully login";
         } catch (ServletException e) {
+            e.printStackTrace();
             return "Username or password invalid";
         }
 //        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);

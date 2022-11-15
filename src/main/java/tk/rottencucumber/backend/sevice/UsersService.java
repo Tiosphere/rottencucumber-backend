@@ -21,13 +21,16 @@ public class UsersService {
         UsersModel newUser = new UsersModel();
         newUser.setUsername(username);
         newUser.setEmail(email);
-        String hashpass = passwordEncoder.encode(password);
-        System.out.println(hashpass.length());
-        newUser.setPassword(hashpass);
+        String hash = passwordEncoder.encode(password);
+        newUser.setPassword(hash);
         usersRepository.save(newUser);
     }
 
     public UsersModel findByUsername(String username) {
         return usersRepository.findByUsername(username);
+    }
+
+    public UsersModel findByEmail(String email) {
+        return usersRepository.findByEmail(email);
     }
 }
