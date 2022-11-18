@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import tk.rottencucumber.backend.authentication.MyUserDetailService;
 
 @Configuration
@@ -22,9 +24,10 @@ public class WebSecurityConfig {
         return http
                 .csrf().disable()
                 .authorizeRequests(auth -> {
-                    auth.antMatchers("/api/**", "api/user/login/", "api/user/logout/", "api/user/signup/").permitAll();
+                    auth.antMatchers("/api/**", "api/user/login", "api/user/logout", "api/user/signup").permitAll();
                     auth.antMatchers("/api/user/**").authenticated();
                     auth.antMatchers("/api/admin/**").hasRole("ADMIN");
+                    auth.antMatchers("/**").denyAll();
                 })
 //                .formLogin(form -> form.loginPage("/user/login/").permitAll())
 //                .logout(logout -> logout.logoutUrl("/user/logout/").permitAll())
@@ -44,5 +47,15 @@ public class WebSecurityConfig {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(new MyUserDetailService())
                 .and().build();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("*");
+            }
+        };
     }
 }
