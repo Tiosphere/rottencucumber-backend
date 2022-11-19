@@ -24,10 +24,11 @@ public class WebSecurityConfig {
         return http
                 .csrf().disable()
                 .authorizeRequests(auth -> {
-                    auth.antMatchers("/api/**", "api/user/login", "api/user/logout", "api/user/signup").permitAll();
                     auth.antMatchers("/api/user/**").authenticated();
                     auth.antMatchers("/api/admin/**").hasRole("ADMIN");
-                    auth.antMatchers("/**").denyAll();
+                    auth.antMatchers("/api/auth/**").permitAll();
+                    auth.antMatchers("/api/**").permitAll();
+//                    auth.antMatchers("/**").denyAll();
                 })
 //                .formLogin(form -> form.loginPage("/user/login/").permitAll())
 //                .logout(logout -> logout.logoutUrl("/user/logout/").permitAll())
