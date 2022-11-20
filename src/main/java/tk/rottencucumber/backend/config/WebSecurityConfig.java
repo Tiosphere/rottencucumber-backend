@@ -10,14 +10,25 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import tk.rottencucumber.backend.authentication.MyUserDetailService;
+import tk.rottencucumber.backend.security.JWTRequestFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig {
+
+    private final JWTRequestFilter tokenRequestFilter;
+
+    private final MyUserDetailService myUserDetailService;
+
+    public WebSecurityConfig(JWTRequestFilter tokenRequestFilter, MyUserDetailService myUserDetailService) {
+        this.tokenRequestFilter = tokenRequestFilter;
+        this.myUserDetailService = myUserDetailService;
+    }
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -28,12 +39,8 @@ public class WebSecurityConfig {
                     auth.antMatchers("/api/admin/**").hasRole("ADMIN");
                     auth.antMatchers("/api/auth/**").permitAll();
                     auth.antMatchers("/api/**").permitAll();
-//                    auth.antMatchers("/**").denyAll();
                 })
-//                .formLogin(form -> form.loginPage("/user/login/").permitAll())
-//                .logout(logout -> logout.logoutUrl("/user/logout/").permitAll())
-//                .exceptionHandling().authenticationEntryPoint(new Json403EntryPoint())
-//                .and()
+                .addFilterBefore(tokenRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -46,7 +53,7 @@ public class WebSecurityConfig {
     public AuthenticationManager authManager(HttpSecurity http)
             throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(new MyUserDetailService())
+                .userDetailsService(myUserDetailService)
                 .and().build();
     }
 
@@ -59,4 +66,5 @@ public class WebSecurityConfig {
             }
         };
     }
+
 }

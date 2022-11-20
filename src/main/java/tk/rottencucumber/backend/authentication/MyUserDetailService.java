@@ -1,7 +1,5 @@
 package tk.rottencucumber.backend.authentication;
 
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,11 +9,12 @@ import tk.rottencucumber.backend.model.UsersModel;
 import tk.rottencucumber.backend.repository.UsersRepository;
 
 @Component
-@NoArgsConstructor
 public class MyUserDetailService implements UserDetailsService {
+    private final UsersRepository usersRepository;
 
-    @Autowired
-    private UsersRepository usersRepository;
+    public MyUserDetailService(UsersRepository usersRepository) {
+        this.usersRepository = usersRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
