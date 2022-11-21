@@ -17,24 +17,36 @@ public class JWTService {
         this.decoder = decoder;
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String subject) {
         Instant now = Instant.now();
         JwtClaimsSet claimsSet = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(7, ChronoUnit.DAYS))
-                .subject(username)
+                .subject(subject)
                 .claim("scope", "USER")
                 .build();
         return this.encoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
     }
 
-    public String getUsername(String token) {
+    public String generatePassToken(String subject) {
+        Instant now = Instant.now();
+        JwtClaimsSet claimsSet = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .expiresAt(now.plus(1, ChronoUnit.HOURS))
+                .subject(subject)
+                .claim("scope", "PASS")
+                .build();
+        return this.encoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
+    }
+
+    public String getSubject(String token) {
         return decoder.decode(token).getSubject();
     }
 
     public boolean valid(String token) {
-        Jwt jwt = decoder.decode(token);
-        return jwt.getExpiresAt().isAfter(Instant.now());
+        Instant expire = decoder.decode(token).getExpiresAt();
+        return expire != null && expire.isAfter(Instant.now());
     }
 }

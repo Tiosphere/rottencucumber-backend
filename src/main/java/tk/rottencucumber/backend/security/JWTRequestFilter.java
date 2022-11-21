@@ -34,7 +34,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
             return;
         }
         String token = header.substring(7);
-        String username = JWTService.getUsername(token);
+        String username = JWTService.getSubject(token);
         if (!JWTService.valid(token)) {
             filterChain.doFilter(request, response);
             return;

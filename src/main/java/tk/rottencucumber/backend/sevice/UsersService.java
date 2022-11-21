@@ -1,20 +1,20 @@
 package tk.rottencucumber.backend.sevice;
 
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tk.rottencucumber.backend.model.UsersModel;
 import tk.rottencucumber.backend.repository.UsersRepository;
 
 @Service
-@NoArgsConstructor
 public class UsersService {
 
-    @Autowired
-    private UsersRepository usersRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UsersRepository usersRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UsersService(UsersRepository usersRepository, PasswordEncoder passwordEncoder) {
+        this.usersRepository = usersRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
 
     public void createUser(String username, String email, String password) {
