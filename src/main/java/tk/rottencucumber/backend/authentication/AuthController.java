@@ -1,9 +1,13 @@
 package tk.rottencucumber.backend.authentication;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import tk.rottencucumber.backend.model.UsersModel;
 import tk.rottencucumber.backend.security.JWTService;
 import tk.rottencucumber.backend.sevice.UsersService;
@@ -11,6 +15,7 @@ import tk.rottencucumber.backend.sevice.UsersService;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.util.regex.Pattern;
 
 @RestController
@@ -103,26 +108,53 @@ public class AuthController {
         }
     }
 
-    private record NewPassRequest(String password1, String password2){}
-    private record NewPassResponse(Boolean success, String message){}
+    private record NewPassForm(String password1, String password2){}
+    private record NewPassResponse(Integer code, String message){}
     @PostMapping("/forget-pass/{token}")
-    public NewPassResponse Post(NewPassRequest form, @PathVariable String token) {
+    public NewPassResponse Post(NewPassForm form, @PathVariable String token) {
         if (!JWTService.valid(token)) {
-            return new NewPassResponse(false, "Your token was expire");
+            return new NewPassResponse(2, "Your token was expire");
         }
         String password1 = form.password1();
         String password2 = form.password2();
         String message = passValidator(password1, password2);
         if (message != null) {
-            return new NewPassResponse(false, message);
+            return new NewPassResponse(1, message);
         }
         String subject = JWTService.getSubject(token);
         UsersModel user = usersService.findByToken(subject);
         if (user != null) {
             usersService.newPassword(user, password1);
-            return new NewPassResponse(true, "Successfully change password.");
+            return new NewPassResponse(0, "Successfully change password.");
         }
-        return new NewPassResponse(false, "Oops! something happen");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token");
+    }
+
+    private record ChangePassForm(@JsonProperty("old_password") String oldPassword, String password1, String password2){}
+
+    private record ChangePassResponse(Integer code, String message){}
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PostMapping("/pass-change/{username}")
+    public ChangePassResponse Post(ChangePassForm form, @PathVariable String username, HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        if (!principal.getName().equals(username)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This username doesn't exist");
+        }
+        UsersModel user = usersService.findByUsername(username);
+        String password1 = form.password1();
+        String password2 = form.password2();
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This username doesn't exist");
+        }else if (!usersService.checkPassword(user, form.oldPassword())) {
+            return new ChangePassResponse(1, "Invalid password");
+        }
+        String message = passValidator(password1, password2);
+        if (message != null) {
+            return new ChangePassResponse(2, message);
+        } else {
+            usersService.newPassword(user, password1);
+            return new ChangePassResponse(0, "Successfully change password.");
+        }
     }
 
     private String passValidator(String password1, String password2) {

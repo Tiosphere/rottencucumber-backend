@@ -16,7 +16,6 @@ public class UsersService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     public void createUser(String username, String email, String password) {
         UsersModel newUser = new UsersModel();
         newUser.setUsername(username);
@@ -24,6 +23,10 @@ public class UsersService {
         String hash = passwordEncoder.encode(password);
         newUser.setPassword(hash);
         usersRepository.save(newUser);
+    }
+
+    public boolean checkPassword(UsersModel user, String password) {
+        return passwordEncoder.matches(password, user.getPassword());
     }
 
     public void newPassword(UsersModel user, String password) {

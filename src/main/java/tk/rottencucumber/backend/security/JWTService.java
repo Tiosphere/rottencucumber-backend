@@ -46,7 +46,11 @@ public class JWTService {
     }
 
     public boolean valid(String token) {
-        Instant expire = decoder.decode(token).getExpiresAt();
-        return expire != null && expire.isAfter(Instant.now());
+        try {
+            Instant expire = decoder.decode(token).getExpiresAt();
+            return expire != null && expire.isAfter(Instant.now());
+        } catch (JwtValidationException e) {
+            return false;
+        }
     }
 }
