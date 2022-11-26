@@ -3,10 +3,7 @@ package tk.rottencucumber.backend.authentication;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import tk.rottencucumber.backend.model.UsersModel;
 import tk.rottencucumber.backend.security.JWTService;
@@ -30,21 +27,17 @@ public class AuthController {
 
     }
 
-    private record LoginForm(String username, String password, Boolean remember){}
-    private record LoginResponse(Integer code, String message){}
+    private record LoginForm(String username, String password){}
+    private record LoginResponse(Boolean success, String message){}
 
     @PostMapping("/login")
-    public LoginResponse Login(HttpServletRequest request, LoginForm form) {
+    public LoginResponse Login(HttpServletRequest request,@RequestBody LoginForm form) {
         try {
             request.login(form.username(), form.password());
-            if (form.remember()) {
-                return new LoginResponse(-1, JWTService.generateToken(form.username()));
-            } else {
-                return new LoginResponse(0, "Successfully login.");
-            }
+            return new LoginResponse(true, JWTService.generateToken(form.username()));
         } catch (ServletException e) {
             e.printStackTrace();
-            return new LoginResponse(1, "Invalid username or password.");
+            return new LoginResponse(false, "Invalid username or password.");
         }
     }
 
@@ -66,7 +59,7 @@ public class AuthController {
     private record SignupResponse(Integer code, String message){}
 
     @PostMapping("/signup")
-    public SignupResponse signup(SignupForm form) {
+    public SignupResponse signup(@RequestBody SignupForm form) {
         String username = form.username().strip();
         String email = form.email().strip();
         String password1 = form.password1().strip();
@@ -96,8 +89,8 @@ public class AuthController {
     private record ForgetPassForm(String email){}
     private record ForgetPassResponse(Boolean success, String message){}
 
-    @PostMapping("/forget-pass")
-    public ForgetPassResponse forgetPass(ForgetPassForm form) {
+    @PostMapping("/forget")
+    public ForgetPassResponse forgetPass(@RequestBody ForgetPassForm form) {
         UsersModel user =  usersService.findByEmail(form.email());
         if (user != null) {
             String pass = user.getPassword().substring(200);
@@ -110,8 +103,8 @@ public class AuthController {
 
     private record NewPassForm(String password1, String password2){}
     private record NewPassResponse(Integer code, String message){}
-    @PostMapping("/forget-pass/{token}")
-    public NewPassResponse Post(NewPassForm form, @PathVariable String token) {
+    @PostMapping("/forget/{token}")
+    public NewPassResponse Post(@RequestBody NewPassForm form, @PathVariable String token) {
         if (!JWTService.valid(token)) {
             return new NewPassResponse(2, "Your token was expire");
         }
@@ -134,8 +127,8 @@ public class AuthController {
 
     private record ChangePassResponse(Integer code, String message){}
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    @PostMapping("/pass-change/{username}")
-    public ChangePassResponse Post(ChangePassForm form, @PathVariable String username, HttpServletRequest request) {
+    @PostMapping("/change/{username}")
+    public ChangePassResponse Post(@RequestBody ChangePassForm form, @PathVariable String username, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (!principal.getName().equals(username)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This username doesn't exist");
