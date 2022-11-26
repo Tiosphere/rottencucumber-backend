@@ -10,7 +10,8 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name="users")
-public class UsersModel {
+@NoArgsConstructor
+public class UserModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,18 +19,28 @@ public class UsersModel {
     private Long id;
     @Column(name = "username", nullable = false, unique = true)
     private String username;
+    @Column(name = "slug", nullable = false, unique = true)
+    private String slug;
     @Column(name = "email", nullable = false, unique = true)
     private String email;
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
     @Lob
     @Column(name = "image")
     private Blob image;
+    @Column(name = "type")
+    private String type;
     @Column(name = "is_staff")
     private boolean is_staff;
     //Reverse relations
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private Set<ReviewsModel> reviews;
+    private Set<ReviewModel> reviews;
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private Set<LikesModel> likes;
+    private Set<LikeModel> likes;
+
+    public UserModel(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 }

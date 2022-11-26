@@ -7,15 +7,15 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "likes")
-public class LikesModel {
+public class LikeModel {
 
     @Id
     @Column(name = "id")
     private Long id;
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", nullable = false)
-    private UsersModel user;
+    private UserModel user;
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "review_id", nullable = false)
-    private ReviewsModel review;
+    private ReviewModel review;
 }

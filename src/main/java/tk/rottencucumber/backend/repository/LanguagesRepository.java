@@ -2,8 +2,8 @@ package tk.rottencucumber.backend.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import tk.rottencucumber.backend.model.LanguagesModel;
+import tk.rottencucumber.backend.model.LanguageModel;
 
 @Repository
-public interface LanguagesRepository extends CrudRepository<LanguagesModel, Long> {
+public interface LanguagesRepository extends CrudRepository<LanguageModel, Long> {
 }

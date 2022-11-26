@@ -8,7 +8,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name="languages")
-public class LanguagesModel {
+public class LanguageModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,5 +20,5 @@ public class LanguagesModel {
     private String slug;
     //Reverse relations
     @OneToMany(mappedBy = "language", cascade = CascadeType.REMOVE)
-    private Set<MoviesModel> movies;
+    private Set<MovieModel> movies;
 }

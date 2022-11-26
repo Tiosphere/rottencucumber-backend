@@ -2,7 +2,7 @@ package tk.rottencucumber.backend.sevice;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import tk.rottencucumber.backend.model.UsersModel;
+import tk.rottencucumber.backend.model.UserModel;
 import tk.rottencucumber.backend.repository.UsersRepository;
 
 @Service
@@ -17,33 +17,28 @@ public class UsersService {
     }
 
     public void createUser(String username, String email, String password) {
-        UsersModel newUser = new UsersModel();
-        newUser.setUsername(username);
-        newUser.setEmail(email);
-        String hash = passwordEncoder.encode(password);
-        newUser.setPassword(hash);
-        usersRepository.save(newUser);
+        usersRepository.save(new UserModel(username, email, passwordEncoder.encode(password)));
     }
 
-    public boolean checkPassword(UsersModel user, String password) {
+    public boolean checkPassword(UserModel user, String password) {
         return passwordEncoder.matches(password, user.getPassword());
     }
 
-    public void newPassword(UsersModel user, String password) {
+    public void newPassword(UserModel user, String password) {
         String hash = passwordEncoder.encode(password);
         user.setPassword(hash);
         usersRepository.save(user);
     }
 
-    public UsersModel findByUsername(String username) {
+    public UserModel findByUsername(String username) {
         return usersRepository.findByUsername(username);
     }
 
-    public UsersModel findByEmail(String email) {
+    public UserModel findByEmail(String email) {
         return usersRepository.findByEmail(email);
     }
 
-    public UsersModel findByToken(String token) {
+    public UserModel findByToken(String token) {
         return usersRepository.findByPasswordEndingWith(token);
     }
 }

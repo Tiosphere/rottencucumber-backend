@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name="reviews")
-public class ReviewsModel {
+public class ReviewModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,10 +18,10 @@ public class ReviewsModel {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
-    private UsersModel user;
+    private UserModel user;
     @ManyToOne
     @JoinColumn(name = "movie_id", nullable = false, updatable = false)
-    private MoviesModel movie;
+    private MovieModel movie;
     @Column(name = "rated", nullable = false)
     private Integer rated;
     @Column(name = "comment")
@@ -31,5 +31,5 @@ public class ReviewsModel {
     private LocalDateTime created;
     //Reverse relations
     @OneToMany(mappedBy = "review")
-    private Set<LikesModel> likes;
+    private Set<LikeModel> likes;
 }

@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import tk.rottencucumber.backend.model.UsersModel;
+import tk.rottencucumber.backend.model.UserModel;
 import tk.rottencucumber.backend.security.JWTService;
 import tk.rottencucumber.backend.sevice.UsersService;
 
@@ -43,7 +43,7 @@ public class AuthController {
 
     private record LogoutResponse(Boolean success, String message){}
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public LogoutResponse Post(HttpServletRequest request, HttpSession session) {
         try {
             request.logout();
@@ -91,7 +91,7 @@ public class AuthController {
 
     @PostMapping("/forget")
     public ForgetPassResponse forgetPass(@RequestBody ForgetPassForm form) {
-        UsersModel user =  usersService.findByEmail(form.email());
+        UserModel user =  usersService.findByEmail(form.email());
         if (user != null) {
             String pass = user.getPassword().substring(200);
             String token = JWTService.generatePassToken(pass);
@@ -115,7 +115,7 @@ public class AuthController {
             return new NewPassResponse(1, message);
         }
         String subject = JWTService.getSubject(token);
-        UsersModel user = usersService.findByToken(subject);
+        UserModel user = usersService.findByToken(subject);
         if (user != null) {
             usersService.newPassword(user, password1);
             return new NewPassResponse(0, "Successfully change password.");
@@ -133,7 +133,7 @@ public class AuthController {
         if (!principal.getName().equals(username)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This username doesn't exist");
         }
-        UsersModel user = usersService.findByUsername(username);
+        UserModel user = usersService.findByUsername(username);
         String password1 = form.password1();
         String password2 = form.password2();
         if (user == null) {

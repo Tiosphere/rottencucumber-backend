@@ -3,13 +3,12 @@ package tk.rottencucumber.backend.model;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.sql.Blob;
 import java.util.Set;
 
 @Data
 @Entity
-@Table(name="actors")
-public class ActorsModel {
+@Table(name="platforms")
+public class PlatformModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,10 +18,7 @@ public class ActorsModel {
     private String name;
     @Column(name = "slug", nullable = false, unique = true)
     private String slug;
-    @Lob
-    @Column(name = "image")
-    private Blob image;
     //Reverse relations
-    @ManyToMany(mappedBy = "actors", cascade = CascadeType.REMOVE)
-    private Set<MoviesModel> movies;
+    @ManyToMany(mappedBy = "platforms", cascade = CascadeType.REMOVE)
+    private Set<MovieModel> movies;
 }
