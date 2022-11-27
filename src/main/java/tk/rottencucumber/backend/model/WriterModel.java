@@ -1,14 +1,15 @@
 package tk.rottencucumber.backend.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Blob;
 import java.util.Set;
 
 @Data
 @Entity
 @Table(name = "writers")
+@NoArgsConstructor
 public class WriterModel {
 
     @Id
@@ -21,10 +22,22 @@ public class WriterModel {
     private String slug;
     @Lob
     @Column(name = "image")
-    private Blob image;
+    private byte[] image;
     @Column(name = "type")
     private String type;
     //Reverse relations
     @ManyToMany(mappedBy = "writers", cascade = CascadeType.REMOVE)
     private Set<MovieModel> movies;
+
+    public WriterModel(String name, String slug) {
+        this.name = name;
+        this.slug = slug;
+    }
+
+    public WriterModel(String name, String slug, String type, byte[] image) {
+        this.name = name;
+        this.slug = slug;
+        this.type = type;
+        this.image = image;
+    }
 }
