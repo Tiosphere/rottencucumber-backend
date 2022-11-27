@@ -2,8 +2,8 @@ package tk.rottencucumber.backend.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import tk.rottencucumber.backend.model.DirectorModel;
+import tk.rottencucumber.backend.model.WriterModel;
 
 @Repository
-public interface DirectorsRepository extends CrudRepository<DirectorModel, Long> {
+public interface WriterRepository extends CrudRepository<WriterModel, Long> {
 }

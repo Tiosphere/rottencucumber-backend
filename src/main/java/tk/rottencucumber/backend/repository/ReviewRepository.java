@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import tk.rottencucumber.backend.model.ReviewModel;
 
 @Repository
-public interface ReviewsRepository extends CrudRepository<ReviewModel, Long> {
+public interface ReviewRepository extends CrudRepository<ReviewModel, Long> {
 }

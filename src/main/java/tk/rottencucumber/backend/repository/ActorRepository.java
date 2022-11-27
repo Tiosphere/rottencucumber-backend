@@ -5,8 +5,9 @@ import org.springframework.stereotype.Repository;
 import tk.rottencucumber.backend.model.ActorModel;
 
 @Repository
-public interface ActorsRepository extends CrudRepository<ActorModel, Long> {
+public interface ActorRepository extends CrudRepository<ActorModel, Long> {
 
-    public ActorModel findByName(String name);
+    ActorModel findByName(String name);
+    boolean existsBySlug(String slug);
 
 }

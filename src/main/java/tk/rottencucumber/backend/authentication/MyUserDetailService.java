@@ -6,19 +6,19 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import tk.rottencucumber.backend.model.UserModel;
-import tk.rottencucumber.backend.repository.UsersRepository;
+import tk.rottencucumber.backend.repository.UserRepository;
 
 @Component
 public class MyUserDetailService implements UserDetailsService {
-    private final UsersRepository usersRepository;
+    private final UserRepository userRepository;
 
-    public MyUserDetailService(UsersRepository usersRepository) {
-        this.usersRepository = usersRepository;
+    public MyUserDetailService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserModel user = usersRepository.findByUsername(username);
+        UserModel user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("Invalid username or password");
         }

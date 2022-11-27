@@ -2,8 +2,8 @@ package tk.rottencucumber.backend.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import tk.rottencucumber.backend.model.LikeModel;
+import tk.rottencucumber.backend.model.GenreModel;
 
 @Repository
-public interface LikesRepository extends CrudRepository<LikeModel, Long> {
+public interface GenreRepository extends CrudRepository<GenreModel, Long> {
 }
