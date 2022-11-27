@@ -6,4 +6,10 @@ import tk.rottencucumber.backend.model.DirectorModel;
 
 @Repository
 public interface DirectorRepository extends CrudRepository<DirectorModel, Long> {
+
+    boolean existsBySlug(String slug);
+
+    DirectorModel findBySlug(String slug);
+
+    Iterable<DirectorModel> findAllByNameContainsIgnoreCase(String name);
 }

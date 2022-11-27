@@ -86,12 +86,12 @@ public class ActorController {
     @GetMapping("/get/all/simple")
     public ObjectResponse getAllSimple() {
         Iterable<ActorModel> entities = actorService.getAll();
-        if (entities == null) {
-            return new ObjectResponse(false, "Can't find actor with this name", null);
-        }
         List<Record> list = new ArrayList<>();
         for (ActorModel model : entities) {
             list.add(new PersonRecordSimple(model.getName(), model.getSlug()));
+        }
+        if (list.isEmpty()) {
+            return new ObjectResponse(false, "Can't find actor with this name", null);
         }
         return new ObjectResponse(true, "Successfully retrieve all actors ", list);
     }
@@ -99,12 +99,12 @@ public class ActorController {
     @GetMapping("/find/{name}")
     public ObjectResponse findByName(@PathVariable String name) {
         Iterable<ActorModel> entities = actorService.findByName(name);
-        if (entities == null) {
-            return new ObjectResponse(false, "Can't find actor with this name", null);
-        }
         List<Record> list = new ArrayList<>();
         for (ActorModel model : entities) {
             list.add(new PersonRecord(model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType()));
+        }
+        if (list.isEmpty()) {
+            return new ObjectResponse(false, "Can't find actor with this name", null);
         }
         return new ObjectResponse(true, "Successfully retrieve all actors ", list);
     }
@@ -112,15 +112,15 @@ public class ActorController {
     @GetMapping("/find/{name}/{size}")
     public ObjectResponse findByNameLimit(@PathVariable String name, @PathVariable Integer size) {
         Iterable<ActorModel> entities = actorService.findByName(name);
-        if (entities == null) {
-            return new ObjectResponse(false, "Can't find actor with this name", null);
-        }
         List<Record> list = new ArrayList<>();
         for (ActorModel model : entities) {
             list.add(new PersonRecord(model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType()));
             if (list.size() == size) {
                 break;
             }
+        }
+        if (list.isEmpty()) {
+            return new ObjectResponse(false, "Can't find actor with this name", null);
         }
         return new ObjectResponse(true, "Successfully retrieve all actors ", list);
     }
