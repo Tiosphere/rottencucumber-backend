@@ -9,7 +9,7 @@ import tk.rottencucumber.backend.model.UserModel;
 import tk.rottencucumber.backend.record.BoolResponse;
 import tk.rottencucumber.backend.record.CodeResponse;
 import tk.rottencucumber.backend.security.JWTService;
-import tk.rottencucumber.backend.service.UsersService;
+import tk.rottencucumber.backend.service.UserService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,16 +19,38 @@ import java.util.regex.Pattern;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    private final UsersService usersService;
+    private final UserService userService;
     private final JWTService JWTService;
 
-    public AuthController(UsersService usersService, JWTService JWTService) {
-        this.usersService = usersService;
+    public AuthController(UserService userService, JWTService JWTService) {
+        this.userService = userService;
         this.JWTService = JWTService;
 
     }
 
-    private record LoginForm(String username, String password){}
+    @PostMapping("/signup")
+    public CodeResponse signup(SignupForm form) {
+        String username = form.username().strip();
+        String email = form.email().strip();
+        String password1 = form.password1().strip();
+        String password2 = form.password2().strip();
+        String message = passValidator(password1, password2);
+        if (message != null) {
+            return new CodeResponse(3, message);
+        }
+        if (username.isBlank()) {
+            return new CodeResponse(1, "Username can't be empty.");
+        } else if (email.isBlank()) {
+            return new CodeResponse(2, "Email can't be empty.");
+        } else if (userService.findByUsername(username) != null) {
+            return new CodeResponse(1, String.format("Username %s has already been taken.", username));
+        } else if (userService.findByEmail(email) != null) {
+            return new CodeResponse(2, String.format("Email %s has already been taken.", email));
+        } else {
+            userService.createUser(username, email, password1);
+            return new CodeResponse(0, String.format("Successfully created user %s", username));
+        }
+    }
 
     @PostMapping("/login")
     public BoolResponse Login(HttpServletRequest request, LoginForm form) {
@@ -54,39 +76,9 @@ public class AuthController {
 
     private record SignupForm(String username, String email, String password1, String password2){}
 
-    @PostMapping("/signup")
-    public CodeResponse signup(SignupForm form) {
-        String username = form.username().strip();
-        String email = form.email().strip();
-        String password1 = form.password1().strip();
-        String password2 = form.password2().strip();
-        String message = passValidator(password1, password2);
-        if (message != null) {
-            return new CodeResponse(3, message);
-        }
-        if (username.isBlank()) {
-            return new CodeResponse(1, "Username can't be empty.");
-        }
-        else if (email.isBlank()) {
-            return new CodeResponse(2, "Email can't be empty.");
-        }
-        else if (usersService.findByUsername(username) != null) {
-            return new CodeResponse(1, String.format("Username %s has already been taken.", username));
-        }
-        else if (usersService.findByEmail(email) != null) {
-            return new CodeResponse(2, String.format("Email %s has already been taken.", email));
-        }
-        else {
-            usersService.createUser(username, email, password1);
-            return new CodeResponse(0, String.format("Successfully created user %s", username));
-        }
-    }
-
-    private record ForgetPassForm(String email){}
-
     @PostMapping("/forget")
     public BoolResponse forgetPass(ForgetPassForm form) {
-        UserModel user =  usersService.findByEmail(form.email());
+        UserModel user = userService.findByEmail(form.email());
         if (user != null) {
             String pass = user.getPassword().substring(200);
             String token = JWTService.generatePassToken(pass);
@@ -96,7 +88,9 @@ public class AuthController {
         }
     }
 
-    private record NewPassForm(String password1, String password2) {}
+    private record ForgetPassForm(String email) {
+    }
+
     @PostMapping("/forget/{token}")
     public CodeResponse Post(NewPassForm form, @PathVariable String token) {
         if (!JWTService.valid(token)) {
@@ -109,15 +103,16 @@ public class AuthController {
             return new CodeResponse(1, message);
         }
         String subject = JWTService.getSubject(token);
-        UserModel user = usersService.findByToken(subject);
+        UserModel user = userService.findByToken(subject);
         if (user != null) {
-            usersService.newPassword(user, password1);
+            userService.newPassword(user, password1);
             return new CodeResponse(0, "Successfully change password.");
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token");
     }
 
-    private record ChangePassForm(@JsonProperty("old_password") String oldPassword, String password1, String password2){}
+    private record NewPassForm(String password1, String password2) {
+    }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping("/change/{username}")
@@ -126,31 +121,36 @@ public class AuthController {
         if (!principal.getName().equals(username)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This username doesn't exist");
         }
-        UserModel user = usersService.findByUsername(username);
+        UserModel user = userService.findByUsername(username);
         String password1 = form.password1();
         String password2 = form.password2();
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This username doesn't exist");
-        }else if (!usersService.checkPassword(user, form.oldPassword())) {
+        } else if (!userService.checkPassword(user, form.oldPassword())) {
             return new CodeResponse(1, "Invalid password");
         }
         String message = passValidator(password1, password2);
         if (message != null) {
             return new CodeResponse(2, message);
         } else {
-            usersService.newPassword(user, password1);
+            userService.newPassword(user, password1);
             return new CodeResponse(0, "Successfully change password.");
         }
+    }
+
+    private record ChangePassForm(@JsonProperty("old_password") String oldPassword, String password1,
+                                  String password2) {
+    }
+
+    private record LoginForm(String username, String password) {
     }
 
     private String passValidator(String password1, String password2) {
         if (password1.isBlank() || password2.isBlank()) {
             return "Password can't be empty.";
-        }
-        else if (!password1.equals(password2)) {
+        } else if (!password1.equals(password2)) {
             return "Password didn't match.";
-        }
-        else if (password1.length() < 8) {
+        } else if (password1.length() < 8) {
             return "Password must be 8 characters long.";
         }
         else if (password1.contains(" ")) {

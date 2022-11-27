@@ -7,7 +7,7 @@ import tk.rottencucumber.backend.model.ActorModel;
 @Repository
 public interface ActorRepository extends CrudRepository<ActorModel, Long> {
 
-    ActorModel findByName(String name);
     boolean existsBySlug(String slug);
 
+    ActorModel findBySlug(String slug);
 }
