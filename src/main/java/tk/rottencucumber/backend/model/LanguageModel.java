@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name="languages")
+@Table(name = "languages")
 public class LanguageModel {
 
     @Id

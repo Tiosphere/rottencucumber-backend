@@ -29,7 +29,7 @@ public class UserService {
                 break;
             }
         }
-        userRepository.save(new UserModel(username, slug,  email, passwordEncoder.encode(password)));
+        userRepository.save(new UserModel(username, slug, email, passwordEncoder.encode(password)));
     }
 
     public boolean checkPassword(UserModel user, String password) {

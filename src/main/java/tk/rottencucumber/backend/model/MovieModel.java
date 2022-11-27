@@ -9,9 +9,24 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name="movies")
+@Table(name = "movies")
 public class MovieModel {
 
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable
+    Set<GenreModel> genres;
+    @ManyToMany(cascade = CascadeType.REMOVE)
+    @JoinTable
+    Set<ActorModel> actors;
+    @ManyToMany(cascade = CascadeType.REMOVE)
+    @JoinTable
+    Set<DirectorModel> directors;
+    @ManyToMany(cascade = CascadeType.REMOVE)
+    @JoinTable
+    Set<WriterModel> writers;
+    @ManyToMany(cascade = CascadeType.REMOVE)
+    @JoinTable
+    Set<PlatformModel> platforms;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -29,27 +44,11 @@ public class MovieModel {
     private Blob image;
     @Column(name = "type")
     private String type;
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable
-    Set<GenreModel> genres;
     @ManyToOne
     @JoinColumn(name = "language_id", nullable = false)
     private LanguageModel language;
     @Column(name = "release_date", nullable = false)
     private LocalDate release;
-    @ManyToMany(cascade = CascadeType.REMOVE)
-    @JoinTable
-    Set<ActorModel> actors;
-    @ManyToMany(cascade = CascadeType.REMOVE)
-    @JoinTable
-    Set<DirectorModel> directors;
-    @ManyToMany(cascade = CascadeType.REMOVE)
-    @JoinTable
-    Set<WriterModel> writers;
-    @ManyToMany(cascade = CascadeType.REMOVE)
-    @JoinTable
-    Set<PlatformModel> platforms;
-
     //Reverse relations
     @OneToMany(mappedBy = "movie", cascade = CascadeType.REMOVE)
     private Set<ReviewModel> reviews;

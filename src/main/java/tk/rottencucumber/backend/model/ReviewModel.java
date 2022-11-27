@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name="reviews")
+@Table(name = "reviews")
 public class ReviewModel {
 
     @Id

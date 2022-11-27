@@ -1,6 +1,7 @@
 package tk.rottencucumber.backend.model;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Blob;
@@ -9,7 +10,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name="users")
+@Table(name = "users")
 @NoArgsConstructor
 public class UserModel {
 

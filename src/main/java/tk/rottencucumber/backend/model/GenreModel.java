@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name="genres")
+@Table(name = "genres")
 public class GenreModel {
 
     @Id

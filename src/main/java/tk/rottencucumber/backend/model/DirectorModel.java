@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name="directors")
+@Table(name = "directors")
 public class DirectorModel {
 
     @Id

@@ -46,7 +46,7 @@ public class WebSecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new Argon2PasswordEncoder(32,128,4,8*1024,12);
+        return new Argon2PasswordEncoder(32, 128, 4, 8 * 1024, 12);
     }
 
     @Bean

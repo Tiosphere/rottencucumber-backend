@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name="writers")
+@Table(name = "writers")
 public class WriterModel {
 
     @Id

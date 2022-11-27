@@ -74,8 +74,6 @@ public class AuthController {
         }
     }
 
-    private record SignupForm(String username, String email, String password1, String password2){}
-
     @PostMapping("/forget")
     public BoolResponse forgetPass(ForgetPassForm form) {
         UserModel user = userService.findByEmail(form.email());
@@ -86,9 +84,6 @@ public class AuthController {
         } else {
             return new BoolResponse(false, "Can't find user with this email.");
         }
-    }
-
-    private record ForgetPassForm(String email) {
     }
 
     @PostMapping("/forget/{token}")
@@ -109,9 +104,6 @@ public class AuthController {
             return new CodeResponse(0, "Successfully change password.");
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token");
-    }
-
-    private record NewPassForm(String password1, String password2) {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
@@ -138,13 +130,6 @@ public class AuthController {
         }
     }
 
-    private record ChangePassForm(@JsonProperty("old_password") String oldPassword, String password1,
-                                  String password2) {
-    }
-
-    private record LoginForm(String username, String password) {
-    }
-
     private String passValidator(String password1, String password2) {
         if (password1.isBlank() || password2.isBlank()) {
             return "Password can't be empty.";
@@ -152,16 +137,29 @@ public class AuthController {
             return "Password didn't match.";
         } else if (password1.length() < 8) {
             return "Password must be 8 characters long.";
-        }
-        else if (password1.contains(" ")) {
+        } else if (password1.contains(" ")) {
             return "Password can't contain any white space";
-        }
-        else if (!Pattern.compile(".*\\d.*").matcher(password1).matches()) {
+        } else if (!Pattern.compile(".*\\d.*").matcher(password1).matches()) {
             return "Password must contain at least 1 number.";
-        }
-        else if (!Pattern.compile(".*[A-Z].*").matcher(password1).matches()) {
+        } else if (!Pattern.compile(".*[A-Z].*").matcher(password1).matches()) {
             return "Password must contain at least 1 Capital letter.";
         }
         return null;
+    }
+
+    private record SignupForm(String username, String email, String password1, String password2) {
+    }
+
+    private record ForgetPassForm(String email) {
+    }
+
+    private record NewPassForm(String password1, String password2) {
+    }
+
+    private record ChangePassForm(@JsonProperty("old_password") String oldPassword, String password1,
+                                  String password2) {
+    }
+
+    private record LoginForm(String username, String password) {
     }
 }

@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name="platforms")
+@Table(name = "platforms")
 public class PlatformModel {
 
     @Id
