@@ -6,4 +6,5 @@ import tk.rottencucumber.backend.model.GenreModel;
 
 @Repository
 public interface GenreRepository extends CrudRepository<GenreModel, Long> {
+    GenreModel findBySlug(String slug);
 }
