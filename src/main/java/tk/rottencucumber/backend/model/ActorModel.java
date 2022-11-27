@@ -1,13 +1,15 @@
 package tk.rottencucumber.backend.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Data
 @Entity
-@Table(name="actors")
+@Table(name = "actors")
+@NoArgsConstructor
 public class ActorModel {
 
     @Id

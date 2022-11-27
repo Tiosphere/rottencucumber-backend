@@ -41,5 +41,13 @@ public class ActorService {
     public void delete(ActorModel entity) {
         actorRepository.delete(entity);
     }
+
+    public Iterable<ActorModel> getAll() {
+        return actorRepository.findAll();
+    }
+
+    public Iterable<ActorModel> findByName(String name) {
+        return actorRepository.findAllByNameContainsIgnoreCase(name);
+    }
 }
 
