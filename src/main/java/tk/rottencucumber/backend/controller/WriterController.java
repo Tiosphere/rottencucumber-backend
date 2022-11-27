@@ -28,11 +28,11 @@ public class WriterController {
     @GetMapping("/get/all")
     public ObjectResponse getAll() {
         Iterable<WriterModel> entities = writerService.getAll();
-        List<Record> list = new ArrayList<>();
-        return getObjectResponse(entities, list);
+        return getObjectResponse(entities);
     }
 
-    private ObjectResponse getObjectResponse(Iterable<WriterModel> entities, List<Record> list) {
+    private ObjectResponse getObjectResponse(Iterable<WriterModel> entities) {
+        List<Record> list = new ArrayList<>();
         for (WriterModel model : entities) {
             list.add(new PersonRecord(model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType()));
         }
@@ -104,8 +104,7 @@ public class WriterController {
     @GetMapping("/find/{name}")
     public ObjectResponse findByName(@PathVariable String name) {
         Iterable<WriterModel> entities = writerService.findByName(name);
-        List<Record> list = new ArrayList<>();
-        return getObjectResponse(entities, list);
+        return getObjectResponse(entities);
     }
 
     @GetMapping("/find/{name}/{size}")

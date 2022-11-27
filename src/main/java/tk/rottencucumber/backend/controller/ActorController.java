@@ -28,8 +28,18 @@ public class ActorController {
     @GetMapping("/get/all")
     public ObjectResponse getAll() {
         Iterable<ActorModel> entities = actorService.getAll();
+        return getObjectResponse(entities);
+    }
+
+    private ObjectResponse getObjectResponse(Iterable<ActorModel> entities) {
         List<Record> list = new ArrayList<>();
-        return getObjectResponse(entities, list);
+        for (ActorModel model : entities) {
+            list.add(new PersonRecord(model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType()));
+        }
+        if (list.isEmpty()) {
+            return new ObjectResponse(false, "Can't find actor with this name", null);
+        }
+        return new ObjectResponse(true, "Successfully retrieve all actors ", list);
     }
 
     @PostMapping("/delete/{slug}")
@@ -94,19 +104,9 @@ public class ActorController {
     @GetMapping("/find/{name}")
     public ObjectResponse findByName(@PathVariable String name) {
         Iterable<ActorModel> entities = actorService.findByName(name);
-        List<Record> list = new ArrayList<>();
-        return getObjectResponse(entities, list);
+        return getObjectResponse(entities);
     }
 
-    private ObjectResponse getObjectResponse(Iterable<ActorModel> entities, List<Record> list) {
-        for (ActorModel model : entities) {
-            list.add(new PersonRecord(model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType()));
-        }
-        if (list.isEmpty()) {
-            return new ObjectResponse(false, "Can't find actor with this name", null);
-        }
-        return new ObjectResponse(true, "Successfully retrieve all actors ", list);
-    }
 
     @GetMapping("/find/{name}/{size}")
     public ObjectResponse findByNameLimit(@PathVariable String name, @PathVariable Integer size) {

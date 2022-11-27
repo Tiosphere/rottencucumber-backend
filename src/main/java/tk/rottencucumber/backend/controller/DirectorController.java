@@ -28,11 +28,11 @@ public class DirectorController {
     @GetMapping("/get/all")
     public ObjectResponse getAll() {
         Iterable<DirectorModel> entities = directorService.getAll();
-        List<Record> list = new ArrayList<>();
-        return getObjectResponse(entities, list);
+        return getObjectResponse(entities);
     }
 
-    private ObjectResponse getObjectResponse(Iterable<DirectorModel> entities, List<Record> list) {
+    private ObjectResponse getObjectResponse(Iterable<DirectorModel> entities) {
+        List<Record> list = new ArrayList<>();
         for (DirectorModel model : entities) {
             list.add(new PersonRecord(model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType()));
         }
@@ -104,8 +104,7 @@ public class DirectorController {
     @GetMapping("/find/{name}")
     public ObjectResponse findByName(@PathVariable String name) {
         Iterable<DirectorModel> entities = directorService.findByName(name);
-        List<Record> list = new ArrayList<>();
-        return getObjectResponse(entities, list);
+        return getObjectResponse(entities);
     }
 
     @GetMapping("/find/{name}/{size}")
