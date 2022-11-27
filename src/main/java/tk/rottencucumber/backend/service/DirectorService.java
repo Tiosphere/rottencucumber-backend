@@ -17,7 +17,7 @@ public class DirectorService {
     @Autowired
     private DirectorRepository directorRepository;
 
-    public void createActor(String name, MultipartFile image) throws IOException {
+    public void createDirector(String name, MultipartFile image) throws IOException {
         Slugify slugify = Slugifier.getInstance();
         String slug = slugify.slugify(name);
         while (true) {

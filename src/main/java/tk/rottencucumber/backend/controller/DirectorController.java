@@ -3,8 +3,9 @@ package tk.rottencucumber.backend.controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tk.rottencucumber.backend.model.DirectorModel;
-import tk.rottencucumber.backend.record.PersonRecord;
-import tk.rottencucumber.backend.record.PersonRecordSimple;
+import tk.rottencucumber.backend.record.SimpleRecord;
+import tk.rottencucumber.backend.record.person.PersonCreateForm;
+import tk.rottencucumber.backend.record.person.PersonRecord;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.service.DirectorService;
@@ -27,12 +28,16 @@ public class DirectorController {
     @GetMapping("/get/all")
     public ObjectResponse getAll() {
         Iterable<DirectorModel> entities = directorService.getAll();
-        if (entities == null) {
-            return new ObjectResponse(false, "Can't find director with this name", null);
-        }
         List<Record> list = new ArrayList<>();
+        return getObjectResponse(entities, list);
+    }
+
+    private ObjectResponse getObjectResponse(Iterable<DirectorModel> entities, List<Record> list) {
         for (DirectorModel model : entities) {
             list.add(new PersonRecord(model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType()));
+        }
+        if (list.isEmpty()) {
+            return new ObjectResponse(false, "Can't find director with this name", null);
         }
         return new ObjectResponse(true, "Successfully retrieve all directors ", list);
     }
@@ -48,11 +53,11 @@ public class DirectorController {
     }
 
     @PostMapping("/create")
-    public BoolResponse create(CreateForm form) {
+    public BoolResponse create(PersonCreateForm form) {
         String name = form.name();
         MultipartFile image = form.image();
         try {
-            directorService.createActor(name, image);
+            directorService.createDirector(name, image);
             return new BoolResponse(true, String.format("Successfully create director %s", name));
         } catch (IOException e) {
             return new BoolResponse(false, "Can't process the image. Please try again");
@@ -60,7 +65,7 @@ public class DirectorController {
     }
 
     @PostMapping("/update/{slug}")
-    public BoolResponse update(@PathVariable String slug, CreateForm form) {
+    public BoolResponse update(@PathVariable String slug, PersonCreateForm form) {
         DirectorModel model = directorService.findBySlug(slug);
         if (model == null) {
             return new BoolResponse(false, "Can't find director with this name");
@@ -88,7 +93,7 @@ public class DirectorController {
         Iterable<DirectorModel> entities = directorService.getAll();
         List<Record> list = new ArrayList<>();
         for (DirectorModel model : entities) {
-            list.add(new PersonRecordSimple(model.getName(), model.getSlug()));
+            list.add(new SimpleRecord(model.getName(), model.getSlug()));
         }
         if (list.isEmpty()) {
             return new ObjectResponse(false, "Can't find director with this name", null);
@@ -100,13 +105,7 @@ public class DirectorController {
     public ObjectResponse findByName(@PathVariable String name) {
         Iterable<DirectorModel> entities = directorService.findByName(name);
         List<Record> list = new ArrayList<>();
-        for (DirectorModel model : entities) {
-            list.add(new PersonRecord(model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType()));
-        }
-        if (list.isEmpty()) {
-            return new ObjectResponse(false, "Can't find director with this name", null);
-        }
-        return new ObjectResponse(true, "Successfully retrieve all directors ", list);
+        return getObjectResponse(entities, list);
     }
 
     @GetMapping("/find/{name}/{size}")
@@ -123,8 +122,5 @@ public class DirectorController {
             return new ObjectResponse(false, "Can't find director with this name", null);
         }
         return new ObjectResponse(true, "Successfully retrieve all directors ", list);
-    }
-
-    private record CreateForm(String name, MultipartFile image) {
     }
 }

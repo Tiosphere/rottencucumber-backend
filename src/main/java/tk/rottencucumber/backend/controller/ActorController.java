@@ -3,8 +3,9 @@ package tk.rottencucumber.backend.controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tk.rottencucumber.backend.model.ActorModel;
-import tk.rottencucumber.backend.record.PersonRecord;
-import tk.rottencucumber.backend.record.PersonRecordSimple;
+import tk.rottencucumber.backend.record.SimpleRecord;
+import tk.rottencucumber.backend.record.person.PersonCreateForm;
+import tk.rottencucumber.backend.record.person.PersonRecord;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.service.ActorService;
@@ -27,14 +28,8 @@ public class ActorController {
     @GetMapping("/get/all")
     public ObjectResponse getAll() {
         Iterable<ActorModel> entities = actorService.getAll();
-        if (entities == null) {
-            return new ObjectResponse(false, "Can't find actor with this name", null);
-        }
         List<Record> list = new ArrayList<>();
-        for (ActorModel model : entities) {
-            list.add(new PersonRecord(model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType()));
-        }
-        return new ObjectResponse(true, "Successfully retrieve all actors ", list);
+        return getObjectResponse(entities, list);
     }
 
     @PostMapping("/delete/{slug}")
@@ -48,7 +43,7 @@ public class ActorController {
     }
 
     @PostMapping("/create")
-    public BoolResponse create(CreateForm form) {
+    public BoolResponse create(PersonCreateForm form) {
         String name = form.name();
         MultipartFile image = form.image();
         try {
@@ -60,7 +55,7 @@ public class ActorController {
     }
 
     @PostMapping("/update/{slug}")
-    public BoolResponse update(@PathVariable String slug, CreateForm form) {
+    public BoolResponse update(@PathVariable String slug, PersonCreateForm form) {
         ActorModel model = actorService.findBySlug(slug);
         if (model == null) {
             return new BoolResponse(false, "Can't find actor with this name");
@@ -88,7 +83,7 @@ public class ActorController {
         Iterable<ActorModel> entities = actorService.getAll();
         List<Record> list = new ArrayList<>();
         for (ActorModel model : entities) {
-            list.add(new PersonRecordSimple(model.getName(), model.getSlug()));
+            list.add(new SimpleRecord(model.getName(), model.getSlug()));
         }
         if (list.isEmpty()) {
             return new ObjectResponse(false, "Can't find actor with this name", null);
@@ -100,6 +95,10 @@ public class ActorController {
     public ObjectResponse findByName(@PathVariable String name) {
         Iterable<ActorModel> entities = actorService.findByName(name);
         List<Record> list = new ArrayList<>();
+        return getObjectResponse(entities, list);
+    }
+
+    private ObjectResponse getObjectResponse(Iterable<ActorModel> entities, List<Record> list) {
         for (ActorModel model : entities) {
             list.add(new PersonRecord(model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType()));
         }
@@ -123,8 +122,5 @@ public class ActorController {
             return new ObjectResponse(false, "Can't find actor with this name", null);
         }
         return new ObjectResponse(true, "Successfully retrieve all actors ", list);
-    }
-
-    private record CreateForm(String name, MultipartFile image) {
     }
 }

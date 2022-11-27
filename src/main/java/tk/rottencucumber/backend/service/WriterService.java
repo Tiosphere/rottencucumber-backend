@@ -17,7 +17,7 @@ public class WriterService {
     @Autowired
     private WriterRepository writerRepository;
 
-    public void createActor(String name, MultipartFile image) throws IOException {
+    public void createWriter(String name, MultipartFile image) throws IOException {
         Slugify slugify = Slugifier.getInstance();
         String slug = slugify.slugify(name);
         while (true) {
