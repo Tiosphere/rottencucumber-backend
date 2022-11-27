@@ -1,6 +1,7 @@
 package tk.rottencucumber.backend.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -8,6 +9,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "languages")
+@NoArgsConstructor
 public class LanguageModel {
 
     @Id
@@ -21,4 +23,9 @@ public class LanguageModel {
     //Reverse relations
     @OneToMany(mappedBy = "language", cascade = CascadeType.REMOVE)
     private Set<MovieModel> movies;
+
+    public LanguageModel(String name, String slug) {
+        this.name = name;
+        this.slug = slug;
+    }
 }

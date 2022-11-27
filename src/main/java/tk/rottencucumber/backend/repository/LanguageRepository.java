@@ -6,4 +6,5 @@ import tk.rottencucumber.backend.model.LanguageModel;
 
 @Repository
 public interface LanguageRepository extends CrudRepository<LanguageModel, Long> {
+    LanguageModel findBySlug(String slug);
 }
