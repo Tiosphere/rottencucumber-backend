@@ -38,8 +38,9 @@ public class UserModel {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<LikeModel> likes;
 
-    public UserModel(String username, String email, String password) {
+    public UserModel(String username, String slug, String email, String password) {
         this.username = username;
+        this.slug = slug;
         this.email = email;
         this.password = password;
     }
