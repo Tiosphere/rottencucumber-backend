@@ -6,8 +6,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import tk.rottencucumber.backend.model.UserModel;
-import tk.rottencucumber.backend.record.BoolResponse;
-import tk.rottencucumber.backend.record.CodeResponse;
+import tk.rottencucumber.backend.record.response.BoolResponse;
+import tk.rottencucumber.backend.record.response.CodeResponse;
 import tk.rottencucumber.backend.security.JWTService;
 import tk.rottencucumber.backend.service.UserService;
 
