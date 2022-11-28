@@ -3,13 +3,12 @@ package tk.rottencucumber.backend.controller.admin;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tk.rottencucumber.backend.model.ActorModel;
-import tk.rottencucumber.backend.record.SimpleRecord;
 import tk.rottencucumber.backend.record.person.PersonCreateForm;
-import tk.rottencucumber.backend.record.person.PersonRecord;
+import tk.rottencucumber.backend.record.person.PersonRecordWithID;
+import tk.rottencucumber.backend.record.person.PersonRecordWithIdBuilder;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.service.ActorService;
-import tk.rottencucumber.backend.util.Base64Encoder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,37 +17,29 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/actor")
 public class ActorController {
+    private final ActorService service;
 
-    private final ActorService actorService;
-
-    public ActorController(ActorService actorService) {
-        this.actorService = actorService;
+    public ActorController(ActorService service) {
+        this.service = service;
     }
 
     @GetMapping("/get/all")
-    public ObjectResponse getAll() {
-        Iterable<ActorModel> entities = actorService.getAll();
-        return getObjectResponse(entities);
-    }
-
-    private ObjectResponse getObjectResponse(Iterable<ActorModel> entities) {
-        List<Record> list = new ArrayList<>();
+    public List<PersonRecordWithID> getAll() {
+        Iterable<ActorModel> entities = service.getAll();
+        List<PersonRecordWithID> list = new ArrayList<>();
         for (ActorModel model : entities) {
-            list.add(new PersonRecord(model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType()));
+            list.add(PersonRecordWithIdBuilder.create(model));
         }
-        if (list.isEmpty()) {
-            return new ObjectResponse(false, "Can't find actor with this name", null);
-        }
-        return new ObjectResponse(true, "Successfully retrieve all actors ", list);
+        return list;
     }
 
     @PostMapping("/delete/{slug}")
     public BoolResponse delete(@PathVariable String slug) {
-        ActorModel model = actorService.findBySlug(slug);
+        ActorModel model = service.findBySlug(slug);
         if (model == null) {
             return new BoolResponse(false, "Can't find actor with this name");
         }
-        actorService.delete(model);
+        service.delete(model);
         return new BoolResponse(true, String.format("Successfully deleted actor %s", model.getName()));
     }
 
@@ -57,7 +48,7 @@ public class ActorController {
         String name = form.name();
         MultipartFile image = form.image();
         try {
-            actorService.createActor(name, image);
+            service.createActor(name, image);
             return new BoolResponse(true, String.format("Successfully create actor %s", name));
         } catch (IOException e) {
             return new BoolResponse(false, "Can't process the image. Please try again");
@@ -66,61 +57,25 @@ public class ActorController {
 
     @PostMapping("/update/{slug}")
     public BoolResponse update(@PathVariable String slug, PersonCreateForm form) {
-        ActorModel model = actorService.findBySlug(slug);
+        ActorModel model = service.findBySlug(slug);
         if (model == null) {
             return new BoolResponse(false, "Can't find actor with this name");
         } else {
-            actorService.delete(model);
+            try {
+                service.update(model, form.name(), form.image());
+            } catch (IOException e) {
+                return new BoolResponse(false, "Can't process the image. Please try again");
+            }
         }
-        return create(form);
+        return new BoolResponse(true, String.format("Successfully create actor %s", model.getName()));
     }
 
     @GetMapping("/get/{slug}")
     public ObjectResponse get(@PathVariable String slug) {
-        ActorModel model = actorService.findBySlug(slug);
+        ActorModel model = service.findBySlug(slug);
         if (model == null) {
             return new ObjectResponse(false, "Can't find actor with this name", null);
         }
-        PersonRecord record = new PersonRecord(model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType());
-        return new ObjectResponse(true, String.format("Successfully get actor %s", model.getName()), List.of(record));
-    }
-
-    /*
-     * same as normal get all but not include image data
-     */
-    @GetMapping("/get/all/simple")
-    public ObjectResponse getAllSimple() {
-        Iterable<ActorModel> entities = actorService.getAll();
-        List<Record> list = new ArrayList<>();
-        for (ActorModel model : entities) {
-            list.add(new SimpleRecord(model.getName(), model.getSlug()));
-        }
-        if (list.isEmpty()) {
-            return new ObjectResponse(false, "Can't find actor with this name", null);
-        }
-        return new ObjectResponse(true, "Successfully retrieve all actors ", list);
-    }
-
-    @GetMapping("/find/{name}")
-    public ObjectResponse findByName(@PathVariable String name) {
-        Iterable<ActorModel> entities = actorService.findByName(name);
-        return getObjectResponse(entities);
-    }
-
-
-    @GetMapping("/find/{name}/{size}")
-    public ObjectResponse findByNameLimit(@PathVariable String name, @PathVariable Integer size) {
-        Iterable<ActorModel> entities = actorService.findByName(name);
-        List<Record> list = new ArrayList<>();
-        for (ActorModel model : entities) {
-            list.add(new PersonRecord(model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType()));
-            if (list.size() == size) {
-                break;
-            }
-        }
-        if (list.isEmpty()) {
-            return new ObjectResponse(false, "Can't find actor with this name", null);
-        }
-        return new ObjectResponse(true, "Successfully retrieve all actors ", list);
+        return new ObjectResponse(true, String.format("Successfully get actor %s", model.getName()), List.of(PersonRecordWithIdBuilder.create(model)));
     }
 }

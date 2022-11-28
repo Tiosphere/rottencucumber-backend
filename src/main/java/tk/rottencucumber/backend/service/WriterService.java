@@ -36,6 +36,30 @@ public class WriterService {
         repository.save(new WriterModel(name, slug, image.getContentType(), image.getBytes()));
     }
 
+    public void update(WriterModel model, String name, MultipartFile image) throws IOException {
+        if (!name.equals(model.getName())) {
+            Slugify slugify = Slugifier.getInstance();
+            String slug = slugify.slugify(name);
+            while (true) {
+                if (repository.existsBySlug(slug)) {
+                    slug = slugify.slugify(slug.concat(RandomString.hashOf(4)));
+                } else {
+                    break;
+                }
+            }
+            model.setName(name);
+            model.setSlug(slug);
+        }
+        if (image.isEmpty()) {
+            model.setImage(null);
+            model.setType(null);
+        } else {
+            model.setImage(image.getBytes());
+            model.setType(image.getContentType());
+        }
+        repository.save(model);
+    }
+
     public WriterModel findBySlug(String slug) {
         return repository.findBySlug(slug);
     }
@@ -48,8 +72,5 @@ public class WriterService {
         return repository.findAll();
     }
 
-    public Iterable<WriterModel> findByName(String name) {
-        return repository.findAllByNameContainsIgnoreCase(name);
-    }
 }
 
