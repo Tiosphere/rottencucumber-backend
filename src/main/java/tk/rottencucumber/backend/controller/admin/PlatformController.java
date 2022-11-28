@@ -1,4 +1,4 @@
-package tk.rottencucumber.backend.controller.model;
+package tk.rottencucumber.backend.controller.admin;
 
 import org.springframework.web.bind.annotation.*;
 import tk.rottencucumber.backend.model.PlatformModel;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/platform")
+@RequestMapping("/admin/platform")
 public class PlatformController {
 
     private final PlatformService platformService;

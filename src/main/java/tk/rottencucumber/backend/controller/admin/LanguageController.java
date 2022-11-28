@@ -1,4 +1,4 @@
-package tk.rottencucumber.backend.controller.model;
+package tk.rottencucumber.backend.controller.admin;
 
 import org.springframework.web.bind.annotation.*;
 import tk.rottencucumber.backend.model.LanguageModel;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/language")
+@RequestMapping("/admin/language")
 public class LanguageController {
 
     private final LanguageService languageService;

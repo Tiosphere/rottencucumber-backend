@@ -1,4 +1,4 @@
-package tk.rottencucumber.backend.controller.model;
+package tk.rottencucumber.backend.controller.admin;
 
 import org.springframework.web.bind.annotation.*;
 import tk.rottencucumber.backend.model.GenreModel;
@@ -41,7 +41,7 @@ public class GenreController {
         return new BoolResponse(true, String.format("Successfully deleted genre %s", model.getName()));
     }
 
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public BoolResponse create(CategoryCreateForm form) {
         String name = form.name();
         genreService.createGenre(name);

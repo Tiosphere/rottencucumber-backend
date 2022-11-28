@@ -1,4 +1,4 @@
-package tk.rottencucumber.backend.controller.model;
+package tk.rottencucumber.backend.controller.admin;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/actor")
+@RequestMapping("/admin/actor")
 public class ActorController {
 
     private final ActorService actorService;
