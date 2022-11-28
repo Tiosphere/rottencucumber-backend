@@ -11,11 +11,11 @@ import tk.rottencucumber.backend.util.Slugifier;
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
+    public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
+        this.repository = repository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -23,13 +23,13 @@ public class UserService {
         Slugify slugify = Slugifier.getInstance();
         String slug = slugify.slugify(username);
         while (true) {
-            if (userRepository.existsBySlug(slug)) {
+            if (repository.existsBySlug(slug)) {
                 slug = slugify.slugify(slug.concat(RandomString.hashOf(4)));
             } else {
                 break;
             }
         }
-        userRepository.save(new UserModel(username, slug, email, passwordEncoder.encode(password)));
+        repository.save(new UserModel(username, slug, email, passwordEncoder.encode(password)));
     }
 
     public boolean checkPassword(UserModel user, String password) {
@@ -39,18 +39,18 @@ public class UserService {
     public void newPassword(UserModel user, String password) {
         String hash = passwordEncoder.encode(password);
         user.setPassword(hash);
-        userRepository.save(user);
+        repository.save(user);
     }
 
     public UserModel findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return repository.findByUsername(username);
     }
 
     public UserModel findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return repository.findByEmail(email);
     }
 
     public UserModel findByToken(String token) {
-        return userRepository.findByPasswordEndingWith(token);
+        return repository.findByPasswordEndingWith(token);
     }
 }

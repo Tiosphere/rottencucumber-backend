@@ -2,7 +2,6 @@ package tk.rottencucumber.backend.service;
 
 import com.github.slugify.Slugify;
 import net.bytebuddy.utility.RandomString;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tk.rottencucumber.backend.model.WriterModel;
@@ -14,40 +13,43 @@ import java.io.IOException;
 @Service
 public class WriterService {
 
-    @Autowired
-    private WriterRepository writerRepository;
+    private final WriterRepository repository;
+
+    public WriterService(WriterRepository repository) {
+        this.repository = repository;
+    }
 
     public void createWriter(String name, MultipartFile image) throws IOException {
         Slugify slugify = Slugifier.getInstance();
         String slug = slugify.slugify(name);
         while (true) {
-            if (writerRepository.existsBySlug(slug)) {
+            if (repository.existsBySlug(slug)) {
                 slug = slugify.slugify(slug.concat(RandomString.hashOf(4)));
             } else {
                 break;
             }
         }
         if (image == null) {
-            writerRepository.save(new WriterModel(name, slug));
+            repository.save(new WriterModel(name, slug));
             return;
         }
-        writerRepository.save(new WriterModel(name, slug, image.getContentType(), image.getBytes()));
+        repository.save(new WriterModel(name, slug, image.getContentType(), image.getBytes()));
     }
 
     public WriterModel findBySlug(String slug) {
-        return writerRepository.findBySlug(slug);
+        return repository.findBySlug(slug);
     }
 
     public void delete(WriterModel entity) {
-        writerRepository.delete(entity);
+        repository.delete(entity);
     }
 
     public Iterable<WriterModel> getAll() {
-        return writerRepository.findAll();
+        return repository.findAll();
     }
 
     public Iterable<WriterModel> findByName(String name) {
-        return writerRepository.findAllByNameContainsIgnoreCase(name);
+        return repository.findAllByNameContainsIgnoreCase(name);
     }
 }
 

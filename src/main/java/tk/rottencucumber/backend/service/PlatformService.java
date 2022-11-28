@@ -1,6 +1,5 @@
 package tk.rottencucumber.backend.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.rottencucumber.backend.model.PlatformModel;
 import tk.rottencucumber.backend.repository.PlatformRepository;
@@ -9,23 +8,26 @@ import tk.rottencucumber.backend.util.Slugifier;
 @Service
 public class PlatformService {
 
-    @Autowired
-    private PlatformRepository platformRepository;
+    private final PlatformRepository repository;
+
+    public PlatformService(PlatformRepository repository) {
+        this.repository = repository;
+    }
 
     public void createPlatform(String name) {
-        platformRepository.save(new PlatformModel(name, Slugifier.getInstance().slugify(name)));
+        repository.save(new PlatformModel(name, Slugifier.getInstance().slugify(name)));
     }
 
     public PlatformModel findBySlug(String slug) {
-        return platformRepository.findBySlug(slug);
+        return repository.findBySlug(slug);
     }
 
     public void delete(PlatformModel entity) {
-        platformRepository.delete(entity);
+        repository.delete(entity);
     }
 
     public Iterable<PlatformModel> getAll() {
-        return platformRepository.findAll();
+        return repository.findAll();
     }
 }
 
