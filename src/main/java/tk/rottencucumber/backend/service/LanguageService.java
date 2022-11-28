@@ -1,5 +1,7 @@
 package tk.rottencucumber.backend.service;
 
+import com.github.slugify.Slugify;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.stereotype.Service;
 import tk.rottencucumber.backend.model.LanguageModel;
 import tk.rottencucumber.backend.repository.LanguageRepository;
@@ -14,8 +16,25 @@ public class LanguageService {
         this.repository = repository;
     }
 
-    public void createGenre(String name) {
+    public void createLanguage(String name) {
         repository.save(new LanguageModel(name, Slugifier.getInstance().slugify(name)));
+    }
+
+    public void update(LanguageModel model, String name) {
+        if (!name.equals(model.getName())) {
+            Slugify slugify = Slugifier.getInstance();
+            String slug = slugify.slugify(name);
+            while (true) {
+                if (repository.existsBySlug(slug)) {
+                    slug = slugify.slugify(slug.concat(RandomString.hashOf(4)));
+                } else {
+                    break;
+                }
+            }
+            model.setName(name);
+            model.setSlug(slug);
+        }
+        repository.save(model);
     }
 
     public LanguageModel findBySlug(String slug) {

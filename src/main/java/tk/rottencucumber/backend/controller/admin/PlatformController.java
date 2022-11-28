@@ -2,69 +2,70 @@ package tk.rottencucumber.backend.controller.admin;
 
 import org.springframework.web.bind.annotation.*;
 import tk.rottencucumber.backend.model.PlatformModel;
-import tk.rottencucumber.backend.record.SimpleRecord;
-import tk.rottencucumber.backend.record.category.CategoryCreateForm;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
+import tk.rottencucumber.backend.record.simple.SimpleCreateForm;
+import tk.rottencucumber.backend.record.simple.SimpleRecordWithID;
+import tk.rottencucumber.backend.record.simple.SimpleRecordWithIdBuilder;
 import tk.rottencucumber.backend.service.PlatformService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/platform")
+@RequestMapping("/genre")
 public class PlatformController {
 
-    private final PlatformService platformService;
+    private final PlatformService service;
 
-    public PlatformController(PlatformService platformService) {
-        this.platformService = platformService;
+    public PlatformController(PlatformService service) {
+        this.service = service;
     }
 
     @GetMapping("/get/all")
-    public ObjectResponse getAll() {
-        Iterable<PlatformModel> entities = platformService.getAll();
-        List<Record> list = new ArrayList<>();
+    public List<SimpleRecordWithID> getAll() {
+        Iterable<PlatformModel> entities = service.getAll();
+        List<SimpleRecordWithID> list = new ArrayList<>();
         for (PlatformModel model : entities) {
-            list.add(new SimpleRecord(model.getName(), model.getSlug()));
+            list.add(SimpleRecordWithIdBuilder.create(model));
         }
-        return new ObjectResponse(true, "Successfully retrieve all platforms ", list);
+        return list;
     }
 
     @PostMapping("/delete/{slug}")
     public BoolResponse delete(@PathVariable String slug) {
-        PlatformModel model = platformService.findBySlug(slug);
+        PlatformModel model = service.findBySlug(slug);
         if (model == null) {
-            return new BoolResponse(false, "Can't find platform with this name");
+            return new BoolResponse(false, "Can't find genre with this name");
         }
-        platformService.delete(model);
-        return new BoolResponse(true, String.format("Successfully deleted platform %s", model.getName()));
+        service.delete(model);
+        return new BoolResponse(true, String.format("Successfully deleted genre %s", model.getName()));
     }
 
-    @PostMapping("/create")
-    public BoolResponse create(CategoryCreateForm form) {
+    @PostMapping("/admin/create")
+    public BoolResponse create(SimpleCreateForm form) {
         String name = form.name();
-        platformService.createPlatform(name);
-        return new BoolResponse(true, String.format("Successfully create platform %s", name));
+        service.createPlatform(name);
+        return new BoolResponse(true, String.format("Successfully create genre %s", name));
     }
 
     @PostMapping("/update/{slug}")
-    public BoolResponse update(@PathVariable String slug, CategoryCreateForm form) {
-        PlatformModel model = platformService.findBySlug(slug);
+    public BoolResponse update(@PathVariable String slug, SimpleCreateForm form) {
+        PlatformModel model = service.findBySlug(slug);
         if (model == null) {
-            return new BoolResponse(false, "Can't find platform with this name");
+            return new BoolResponse(false, "Can't find genre with this name");
         } else {
-            platformService.delete(model);
+            service.update(model, form.name());
         }
-        return create(form);
+        return new BoolResponse(true, String.format("Successfully create genre %s", form.name()));
     }
 
     @GetMapping("/get/{slug}")
     public ObjectResponse get(@PathVariable String slug) {
-        PlatformModel model = platformService.findBySlug(slug);
+        PlatformModel model = service.findBySlug(slug);
         if (model == null) {
-            return new ObjectResponse(false, "Can't find platform with this name", null);
+            return new ObjectResponse(false, "Can't find genre with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get platform %s", model.getName()), List.of(new SimpleRecord(model.getName(), model.getSlug())));
+        return new ObjectResponse(true, String.format("Successfully get genre %s", model.getName()), List.of(SimpleRecordWithIdBuilder.create(model)));
     }
 }
