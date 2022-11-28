@@ -42,6 +42,8 @@ public class MovieModel {
     @Lob
     @Column(name = "image")
     private Blob image;
+    @Column(name = "views")
+    private Integer views;
     @Column(name = "type")
     private String type;
     @ManyToOne
