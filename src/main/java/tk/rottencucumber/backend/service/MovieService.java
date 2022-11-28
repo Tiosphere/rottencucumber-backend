@@ -16,6 +16,14 @@ public class MovieService {
         return repository.findBySlug(slug);
     }
 
+    public Iterable<MovieModel> getByGenre(String slug) {
+        return repository.findAllByGenres_slugOrderByReleaseDesc(slug);
+    }
+
+    public Iterable<MovieModel> getByPlatform(String slug) {
+        return repository.findAllByPlatforms_slugOrderByReleaseDesc(slug);
+    }
+
     public Iterable<MovieModel> getMostViews() {
         return repository.findMovieModelsByOrderByViewsDesc();
     }

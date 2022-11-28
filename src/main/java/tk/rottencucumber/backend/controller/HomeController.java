@@ -1,13 +1,16 @@
 package tk.rottencucumber.backend.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import tk.rottencucumber.backend.model.GenreModel;
 import tk.rottencucumber.backend.model.MovieModel;
+import tk.rottencucumber.backend.model.PlatformModel;
 import tk.rottencucumber.backend.record.main.GenreRecord;
 import tk.rottencucumber.backend.record.main.MovieRecord;
 import tk.rottencucumber.backend.service.GenreService;
 import tk.rottencucumber.backend.service.MovieService;
+import tk.rottencucumber.backend.service.PlatformService;
 import tk.rottencucumber.backend.util.Base64Encoder;
 
 import java.util.ArrayList;
@@ -20,24 +23,31 @@ public class HomeController {
 
     private final GenreService genreService;
 
-    public HomeController(MovieService movieService, GenreService genreService) {
+    private final PlatformService platformService;
+
+    public HomeController(MovieService movieService, GenreService genreService, PlatformService platformService) {
         this.movieService = movieService;
         this.genreService = genreService;
+        this.platformService = platformService;
     }
 
     @GetMapping("/home")
     public HomeResponse Home() {
-        return new HomeResponse(getMostViews(20), getLatestMovies(20));
+        Iterable<MovieModel> latest = movieService.getLatest();
+        Iterable<MovieModel> popular = movieService.getMostViews();
+        return new HomeResponse(getMovieRecords(popular, 20), getMovieRecords(latest, 20));
     }
 
     @GetMapping("/latest")
     public List<Record> latest() {
-        return getLatestMovies(0);
+        Iterable<MovieModel> all = movieService.getLatest();
+        return getMovieRecords(all);
     }
 
     @GetMapping("/popular")
     public List<Record> popular() {
-        return getMostViews(0);
+        Iterable<MovieModel> all = movieService.getMostViews();
+        return getMovieRecords(all);
     }
 
     @GetMapping("/genres")
@@ -50,14 +60,30 @@ public class HomeController {
         return list;
     }
 
-    private List<Record> getLatestMovies(Integer size) {
-        Iterable<MovieModel> latest = movieService.getLatest();
-        return getMovieRecords(latest, size);
+    @GetMapping("/genres/{slug}")
+    public List<Record> genre(@PathVariable String slug) {
+        Iterable<MovieModel> all = movieService.getByGenre(slug);
+        return getMovieRecords(all);
     }
 
-    private List<Record> getMostViews(Integer size) {
-        Iterable<MovieModel> popular = movieService.getMostViews();
-        return getMovieRecords(popular, size);
+    @GetMapping("/platform")
+    public List<Record> allPlatform() {
+        Iterable<PlatformModel> all = platformService.getAll();
+        List<Record> list = new ArrayList<>();
+        for (PlatformModel model : all) {
+            list.add(new GenreRecord(model.getName(), model.getSlug()));
+        }
+        return list;
+    }
+
+    @GetMapping("/platform/{slug}")
+    public List<Record> platform(@PathVariable String slug) {
+        Iterable<MovieModel> all = movieService.getByPlatform(slug);
+        return getMovieRecords(all);
+    }
+
+    private List<Record> getMovieRecords(Iterable<MovieModel> movieModelIterable) {
+        return getMovieRecords(movieModelIterable, 0);
     }
 
     private List<Record> getMovieRecords(Iterable<MovieModel> movieModelIterable, Integer size) {
@@ -103,6 +129,5 @@ public class HomeController {
 
     private record HomeResponse(List<Record> popular, List<Record> latest) {
     }
-
 
 }
