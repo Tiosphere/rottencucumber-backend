@@ -3,7 +3,6 @@ package tk.rottencucumber.backend.model;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.sql.Blob;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -41,7 +40,7 @@ public class MovieModel {
     private String preview;
     @Lob
     @Column(name = "image")
-    private Blob image;
+    private byte[] image;
     @Column(name = "views")
     private Integer views;
     @Column(name = "type")
