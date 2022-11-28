@@ -35,9 +35,8 @@ public class WebSecurityConfig {
         return http
                 .csrf().disable()
                 .authorizeRequests(auth -> {
-//                    auth.antMatchers("/api/user/**").authenticated();
-//                    auth.antMatchers("/api/admin/**").hasRole("ADMIN");
-//                    auth.antMatchers("/api/auth/**").permitAll();
+                    auth.antMatchers("/api/user/**").authenticated();
+                    auth.antMatchers("/api/admin/**").hasRole("ADMIN");
                     auth.antMatchers("/api/**").permitAll();
                 })
                 .addFilterBefore(tokenRequestFilter, UsernamePasswordAuthenticationFilter.class)

@@ -1,4 +1,4 @@
-package tk.rottencucumber.backend.controller;
+package tk.rottencucumber.backend.controller.model;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
