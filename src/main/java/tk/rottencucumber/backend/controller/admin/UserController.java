@@ -29,7 +29,7 @@ public class UserController {
         return new BoolResponse(true, String.format("Successfully create user %s", form.username()));
     }
 
-    @PostMapping("/get/all")
+    @GetMapping("/get/all")
     public List<UserRecordWithID> getAll() {
         Iterable<UserModel> all = service.getAll();
         List<UserRecordWithID> list = new ArrayList<>();
