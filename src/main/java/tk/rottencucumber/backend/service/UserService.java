@@ -20,6 +20,10 @@ public class UserService {
     }
 
     public void createUser(String username, String email, String password) {
+        createUser(username, email, password, false);
+    }
+
+    public void createUser(String username, String email, String password, Boolean isStaff) {
         Slugify slugify = Slugifier.getInstance();
         String slug = slugify.slugify(username);
         while (true) {
@@ -29,7 +33,29 @@ public class UserService {
                 break;
             }
         }
-        repository.save(new UserModel(username, slug, email, passwordEncoder.encode(password)));
+        repository.save(new UserModel(username, slug, email, passwordEncoder.encode(password), isStaff));
+    }
+
+    public void delete(UserModel entity) {
+        repository.delete(entity);
+    }
+
+    public void update(UserModel model, String username, String email) {
+        if (!username.equals(model.getUsername())) {
+            Slugify slugify = Slugifier.getInstance();
+            String slug = slugify.slugify(username);
+            while (true) {
+                if (repository.existsBySlug(slug)) {
+                    slug = slugify.slugify(slug.concat(RandomString.hashOf(4)));
+                } else {
+                    break;
+                }
+            }
+            model.setUsername(username);
+            model.setSlug(slug);
+        }
+        model.setEmail(email);
+        repository.save(model);
     }
 
     public boolean checkPassword(UserModel user, String password) {
@@ -52,5 +78,13 @@ public class UserService {
 
     public UserModel findByToken(String token) {
         return repository.findByPasswordEndingWith(token);
+    }
+
+    public UserModel findBySlug(String slug) {
+        return repository.findBySlug(slug);
+    }
+
+    public Iterable<UserModel> getAll() {
+        return repository.findAll();
     }
 }

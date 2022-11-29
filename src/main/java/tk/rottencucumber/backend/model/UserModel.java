@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Blob;
 import java.util.Set;
 
 
@@ -26,11 +25,6 @@ public class UserModel {
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
-    @Lob
-    @Column(name = "image")
-    private Blob image;
-    @Column(name = "type")
-    private String type;
     @Column(name = "is_staff")
     private boolean is_staff;
     //Reverse relations
@@ -38,11 +32,11 @@ public class UserModel {
     private Set<ReviewModel> reviews;
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<LikeModel> likes;
-
-    public UserModel(String username, String slug, String email, String password) {
+    public UserModel(String username, String slug, String email, String password, Boolean isStaff) {
         this.username = username;
         this.slug = slug;
         this.email = email;
         this.password = password;
+        this.is_staff = isStaff;
     }
 }

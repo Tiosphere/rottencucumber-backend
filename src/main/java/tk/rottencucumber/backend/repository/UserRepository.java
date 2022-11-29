@@ -13,5 +13,7 @@ public interface UserRepository extends CrudRepository<UserModel, Long> {
 
     UserModel findByPasswordEndingWith(String keyword);
 
+    UserModel findBySlug(String slug);
+
     boolean existsBySlug(String slug);
 }
