@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -25,6 +26,12 @@ public class ActorModel {
     private byte[] image;
     @Column(name = "type")
     private String type;
+    @Column(name = "birthday")
+    private LocalDate birthday;
+    @Column(name = "birth_place")
+    private String birthPlace;
+    @Column(name = "description", columnDefinition = "mediumtext")
+    private String description;
     //Reverse relations
     @ManyToMany(mappedBy = "actors", cascade = CascadeType.REMOVE)
     private Set<MovieModel> movies;

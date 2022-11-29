@@ -12,7 +12,7 @@ public class MovieService {
         this.repository = repository;
     }
 
-    public MovieModel getBySlug(String slug) {
+    public MovieModel findBySlug(String slug) {
         return repository.findBySlug(slug);
     }
 

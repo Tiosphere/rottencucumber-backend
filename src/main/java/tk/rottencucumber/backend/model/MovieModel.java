@@ -34,7 +34,7 @@ public class MovieModel {
     private String name;
     @Column(name = "slug", nullable = false, unique = true)
     private String slug;
-    @Column(name = "summary")
+    @Column(name = "summary", columnDefinition = "mediumtext")
     private String summary;
     @Column(name = "preview", nullable = false)
     private String preview;

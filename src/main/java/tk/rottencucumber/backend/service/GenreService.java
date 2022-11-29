@@ -15,7 +15,6 @@ public class GenreService {
     public GenreService(GenreRepository repository) {
         this.repository = repository;
     }
-
     public void createGenre(String name) {
         repository.save(new GenreModel(name, Slugifier.getInstance().slugify(name)));
     }
@@ -35,15 +34,12 @@ public class GenreService {
         }
         repository.save(model);
     }
-
     public GenreModel findBySlug(String slug) {
         return repository.findBySlug(slug);
     }
-
     public void delete(GenreModel entity) {
         repository.delete(entity);
     }
-
     public Iterable<GenreModel> getAll() {
         return repository.findAll();
     }
