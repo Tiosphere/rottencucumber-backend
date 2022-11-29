@@ -19,7 +19,6 @@ public class GenreService {
     public void createGenre(String name) {
         repository.save(new GenreModel(name, Slugifier.getInstance().slugify(name)));
     }
-
     public void update(GenreModel model, String name) {
         if (!name.equals(model.getName())) {
             Slugify slugify = Slugifier.getInstance();

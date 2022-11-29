@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/genre")
+@RequestMapping("/admin/language")
 public class LanguageController {
 
     private final LanguageService service;
@@ -36,36 +36,36 @@ public class LanguageController {
     public BoolResponse delete(@PathVariable String slug) {
         LanguageModel model = service.findBySlug(slug);
         if (model == null) {
-            return new BoolResponse(false, "Can't find genre with this name");
+            return new BoolResponse(false, "Can't find language with this name");
         }
         service.delete(model);
-        return new BoolResponse(true, String.format("Successfully deleted genre %s", model.getName()));
+        return new BoolResponse(true, String.format("Successfully deleted language %s", model.getName()));
     }
 
-    @PostMapping("/admin/create")
+    @PostMapping("/create")
     public BoolResponse create(SimpleCreateForm form) {
         String name = form.name();
         service.createLanguage(name);
-        return new BoolResponse(true, String.format("Successfully create genre %s", name));
+        return new BoolResponse(true, String.format("Successfully create language %s", name));
     }
 
     @PostMapping("/update/{slug}")
     public BoolResponse update(@PathVariable String slug, SimpleCreateForm form) {
         LanguageModel model = service.findBySlug(slug);
         if (model == null) {
-            return new BoolResponse(false, "Can't find genre with this name");
+            return new BoolResponse(false, "Can't find language with this name");
         } else {
             service.update(model, form.name());
         }
-        return new BoolResponse(true, String.format("Successfully create genre %s", form.name()));
+        return new BoolResponse(true, String.format("Successfully create language %s", form.name()));
     }
 
     @GetMapping("/get/{slug}")
     public ObjectResponse get(@PathVariable String slug) {
         LanguageModel model = service.findBySlug(slug);
         if (model == null) {
-            return new ObjectResponse(false, "Can't find genre with this name", null);
+            return new ObjectResponse(false, "Can't find language with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get genre %s", model.getName()), List.of(SimpleRecordWithIdBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get language %s", model.getName()), List.of(SimpleRecordWithIdBuilder.create(model)));
     }
 }

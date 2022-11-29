@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/genre")
+@RequestMapping("/admin/genre")
 public class GenreController {
 
     private final GenreService service;
@@ -42,7 +42,7 @@ public class GenreController {
         return new BoolResponse(true, String.format("Successfully deleted genre %s", model.getName()));
     }
 
-    @PostMapping("/admin/create")
+    @PostMapping("/create")
     public BoolResponse create(SimpleCreateForm form) {
         String name = form.name();
         service.createGenre(name);
