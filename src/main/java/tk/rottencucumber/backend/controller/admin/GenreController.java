@@ -6,8 +6,8 @@ import tk.rottencucumber.backend.model.GenreModel;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.record.simple.SimpleCreateForm;
-import tk.rottencucumber.backend.record.simple.SimpleRecordWithID;
-import tk.rottencucumber.backend.record.simple.SimpleRecordWithIdBuilder;
+import tk.rottencucumber.backend.record.simple.SimpleRecord;
+import tk.rottencucumber.backend.record.simple.SimpleRecordBuilder;
 import tk.rottencucumber.backend.service.GenreService;
 
 import java.util.ArrayList;
@@ -25,11 +25,11 @@ public class GenreController {
     }
 
     @GetMapping("/get/all")
-    public List<SimpleRecordWithID> getAll() {
+    public List<SimpleRecord> getAll() {
         Iterable<GenreModel> entities = service.getAll();
-        List<SimpleRecordWithID> list = new ArrayList<>();
+        List<SimpleRecord> list = new ArrayList<>();
         for (GenreModel model : entities) {
-            list.add(SimpleRecordWithIdBuilder.create(model));
+            list.add(SimpleRecordBuilder.create(model));
         }
         return list;
     }
@@ -68,6 +68,6 @@ public class GenreController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find genre with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get genre %s", model.getName()), List.of(SimpleRecordWithIdBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get genre %s", model.getName()), List.of(SimpleRecordBuilder.create(model)));
     }
 }

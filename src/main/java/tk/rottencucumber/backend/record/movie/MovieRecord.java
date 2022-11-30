@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record MovieRecord(
+        Long id,
         String name,
         String slug,
         String preview,

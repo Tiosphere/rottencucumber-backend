@@ -7,14 +7,14 @@ import tk.rottencucumber.backend.model.PlatformModel;
 public class SimpleRecordBuilder {
 
     public static SimpleRecord create(GenreModel model) {
-        return new SimpleRecord(model.getName(), model.getSlug());
+        return new SimpleRecord(model.getId(), model.getName(), model.getSlug());
     }
 
     public static SimpleRecord create(LanguageModel model) {
-        return new SimpleRecord(model.getName(), model.getSlug());
+        return new SimpleRecord(model.getId(), model.getName(), model.getSlug());
     }
 
     public static SimpleRecord create(PlatformModel model) {
-        return new SimpleRecord(model.getName(), model.getSlug());
+        return new SimpleRecord(model.getId(), model.getName(), model.getSlug());
     }
 }

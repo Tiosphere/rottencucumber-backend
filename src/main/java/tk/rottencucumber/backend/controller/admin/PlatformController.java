@@ -6,8 +6,8 @@ import tk.rottencucumber.backend.model.PlatformModel;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.record.simple.SimpleCreateForm;
-import tk.rottencucumber.backend.record.simple.SimpleRecordWithID;
-import tk.rottencucumber.backend.record.simple.SimpleRecordWithIdBuilder;
+import tk.rottencucumber.backend.record.simple.SimpleRecord;
+import tk.rottencucumber.backend.record.simple.SimpleRecordBuilder;
 import tk.rottencucumber.backend.service.PlatformService;
 
 import java.util.ArrayList;
@@ -25,11 +25,11 @@ public class PlatformController {
     }
 
     @GetMapping("/get/all")
-    public List<SimpleRecordWithID> getAll() {
+    public List<SimpleRecord> getAll() {
         Iterable<PlatformModel> entities = service.getAll();
-        List<SimpleRecordWithID> list = new ArrayList<>();
+        List<SimpleRecord> list = new ArrayList<>();
         for (PlatformModel model : entities) {
-            list.add(SimpleRecordWithIdBuilder.create(model));
+            list.add(SimpleRecordBuilder.create(model));
         }
         return list;
     }
@@ -68,6 +68,6 @@ public class PlatformController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find platform with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get platform %s", model.getName()), List.of(SimpleRecordWithIdBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get platform %s", model.getName()), List.of(SimpleRecordBuilder.create(model)));
     }
 }

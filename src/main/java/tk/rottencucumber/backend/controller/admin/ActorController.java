@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tk.rottencucumber.backend.model.ActorModel;
 import tk.rottencucumber.backend.record.person.PersonCreateForm;
-import tk.rottencucumber.backend.record.person.PersonRecordWithID;
-import tk.rottencucumber.backend.record.person.PersonRecordWithIdBuilder;
+import tk.rottencucumber.backend.record.person.PersonRecord;
+import tk.rottencucumber.backend.record.person.PersonRecordBuilder;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.service.ActorService;
@@ -26,11 +26,11 @@ public class ActorController {
     }
 
     @GetMapping("/get/all")
-    public List<PersonRecordWithID> getAll() {
+    public List<PersonRecord> getAll() {
         Iterable<ActorModel> entities = service.getAll();
-        List<PersonRecordWithID> list = new ArrayList<>();
+        List<PersonRecord> list = new ArrayList<>();
         for (ActorModel model : entities) {
-            list.add(PersonRecordWithIdBuilder.create(model));
+            list.add(PersonRecordBuilder.create(model));
         }
         return list;
     }
@@ -78,6 +78,6 @@ public class ActorController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find actor with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get actor %s", model.getName()), List.of(PersonRecordWithIdBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get actor %s", model.getName()), List.of(PersonRecordBuilder.create(model)));
     }
 }

@@ -1,6 +1,5 @@
 package tk.rottencucumber.backend.record.movie;
 
-
 import tk.rottencucumber.backend.model.*;
 import tk.rottencucumber.backend.record.person.PersonRecord;
 import tk.rottencucumber.backend.record.person.PersonRecordBuilder;
@@ -34,6 +33,7 @@ public class MovieRecordBuilder {
             writers.add(PersonRecordBuilder.create(item));
         }
         return new MovieRecord(
+                model.getId(),
                 model.getName(),
                 model.getSlug(),
                 model.getPreview(),
