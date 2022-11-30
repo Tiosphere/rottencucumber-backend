@@ -1,5 +1,6 @@
 package tk.rottencucumber.backend.controller.admin;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tk.rottencucumber.backend.model.PlatformModel;
 import tk.rottencucumber.backend.record.response.BoolResponse;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/platform")
+@PreAuthorize(value = "hasRole('ADMIN')")
 public class PlatformController {
 
     private final PlatformService service;

@@ -34,11 +34,6 @@ public class WebSecurityConfig {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http
                 .csrf().disable()
-                .authorizeRequests(auth -> {
-                    auth.antMatchers("/api/user/**").authenticated();
-                    auth.antMatchers("/api/admin/**").hasRole("ADMIN");
-                    auth.antMatchers("/api/**").permitAll();
-                })
                 .addFilterBefore(tokenRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

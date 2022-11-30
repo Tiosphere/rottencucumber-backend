@@ -1,5 +1,6 @@
 package tk.rottencucumber.backend.controller.admin;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tk.rottencucumber.backend.model.WriterModel;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/writer")
+@PreAuthorize(value = "hasRole('ADMIN')")
 public class WriterController {
     private final WriterService service;
 
