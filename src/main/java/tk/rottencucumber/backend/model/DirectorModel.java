@@ -36,15 +36,13 @@ public class DirectorModel {
     @ManyToMany(mappedBy = "directors", cascade = CascadeType.REMOVE)
     private Set<MovieModel> movies;
 
-    public DirectorModel(String name, String slug) {
-        this.name = name;
-        this.slug = slug;
-    }
-
-    public DirectorModel(String name, String slug, String type, byte[] image) {
+    public DirectorModel(String name, String slug, String type, byte[] image, String birthPlace, LocalDate birthday, String description) {
         this.name = name;
         this.slug = slug;
         this.type = type;
         this.image = image;
+        this.birthPlace = birthPlace;
+        this.birthday = birthday;
+        this.description = description;
     }
 }

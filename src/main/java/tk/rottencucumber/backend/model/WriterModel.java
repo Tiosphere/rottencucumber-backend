@@ -36,15 +36,13 @@ public class WriterModel {
     @ManyToMany(mappedBy = "writers", cascade = CascadeType.REMOVE)
     private Set<MovieModel> movies;
 
-    public WriterModel(String name, String slug) {
-        this.name = name;
-        this.slug = slug;
-    }
-
-    public WriterModel(String name, String slug, String type, byte[] image) {
+    public WriterModel(String name, String slug, String type, byte[] image, String birthPlace, LocalDate birthday, String description) {
         this.name = name;
         this.slug = slug;
         this.type = type;
         this.image = image;
+        this.birthPlace = birthPlace;
+        this.birthday = birthday;
+        this.description = description;
     }
 }

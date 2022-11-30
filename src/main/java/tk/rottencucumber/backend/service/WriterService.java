@@ -5,6 +5,7 @@ import net.bytebuddy.utility.RandomString;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tk.rottencucumber.backend.model.WriterModel;
+import tk.rottencucumber.backend.record.person.PersonCreateForm;
 import tk.rottencucumber.backend.repository.WriterRepository;
 import tk.rottencucumber.backend.util.Slugifier;
 
@@ -19,7 +20,9 @@ public class WriterService {
         this.repository = repository;
     }
 
-    public void createWriter(String name, MultipartFile image) throws IOException {
+    public void createWriter(PersonCreateForm form) throws IOException {
+        String name = form.name();
+        MultipartFile image = form.image();
         Slugify slugify = Slugifier.getInstance();
         String slug = slugify.slugify(name);
         while (true) {
@@ -30,13 +33,15 @@ public class WriterService {
             }
         }
         if (image == null) {
-            repository.save(new WriterModel(name, slug));
+            repository.save(new WriterModel(name, slug, null, null, form.birthPlace(), form.birthday(), form.description()));
             return;
         }
-        repository.save(new WriterModel(name, slug, image.getContentType(), image.getBytes()));
+        repository.save(new WriterModel(name, slug, image.getContentType(), image.getBytes(), form.birthPlace(), form.birthday(), form.description()));
     }
 
-    public void update(WriterModel model, String name, MultipartFile image) throws IOException {
+    public void update(WriterModel model, PersonCreateForm form) throws IOException {
+        String name = form.name();
+        MultipartFile image = form.image();
         if (!name.equals(model.getName())) {
             Slugify slugify = Slugifier.getInstance();
             String slug = slugify.slugify(name);
@@ -57,6 +62,9 @@ public class WriterService {
             model.setImage(image.getBytes());
             model.setType(image.getContentType());
         }
+        model.setBirthday(form.birthday());
+        model.setBirthPlace(form.birthPlace());
+        model.setDescription(form.description());
         repository.save(model);
     }
 

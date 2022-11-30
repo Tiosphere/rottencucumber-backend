@@ -2,7 +2,6 @@ package tk.rottencucumber.backend.controller.admin;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import tk.rottencucumber.backend.model.DirectorModel;
 import tk.rottencucumber.backend.record.person.PersonCreateForm;
 import tk.rottencucumber.backend.record.person.PersonRecord;
@@ -47,11 +46,9 @@ public class DirectorController {
 
     @PostMapping("/create")
     public BoolResponse create(PersonCreateForm form) {
-        String name = form.name();
-        MultipartFile image = form.image();
         try {
-            service.createDirector(name, image);
-            return new BoolResponse(true, String.format("Successfully create director %s", name));
+            service.createDirector(form);
+            return new BoolResponse(true, String.format("Successfully create director %s", form.name()));
         } catch (IOException e) {
             return new BoolResponse(false, "Can't process the image. Please try again");
         }
@@ -64,7 +61,7 @@ public class DirectorController {
             return new BoolResponse(false, "Can't find director with this name");
         } else {
             try {
-                service.update(model, form.name(), form.image());
+                service.update(model, form);
             } catch (IOException e) {
                 return new BoolResponse(false, "Can't process the image. Please try again");
             }
