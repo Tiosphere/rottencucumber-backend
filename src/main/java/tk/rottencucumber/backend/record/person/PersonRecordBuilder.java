@@ -8,14 +8,14 @@ import tk.rottencucumber.backend.util.Base64Encoder;
 public class PersonRecordBuilder {
 
     public static PersonRecord create(ActorModel model) {
-        return new PersonRecord(model.getId(), model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType());
+        return new PersonRecord(model.getId(), model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType(), model.getBirthPlace(), model.getDescription(), model.getBirthday());
     }
 
     public static PersonRecord create(WriterModel model) {
-        return new PersonRecord(model.getId(), model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType());
+        return new PersonRecord(model.getId(), model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType(), model.getBirthPlace(), model.getDescription(), model.getBirthday());
     }
 
     public static PersonRecord create(DirectorModel model) {
-        return new PersonRecord(model.getId(), model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType());
+        return new PersonRecord(model.getId(), model.getName(), model.getSlug(), Base64Encoder.encode(model.getImage()), model.getType(), model.getBirthPlace(), model.getDescription(), model.getBirthday());
     }
 }
