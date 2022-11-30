@@ -3,7 +3,6 @@ package tk.rottencucumber.backend.record.movie;
 import tk.rottencucumber.backend.record.person.PersonRecord;
 import tk.rottencucumber.backend.record.simple.SimpleRecord;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public record MovieRecord(
@@ -15,7 +14,9 @@ public record MovieRecord(
         String image,
         String type,
         Integer views,
-        LocalDate release,
+        Integer day,
+        Integer month,
+        Integer year,
         SimpleRecord language,
         List<SimpleRecord> genres,
         List<SimpleRecord> platform,
