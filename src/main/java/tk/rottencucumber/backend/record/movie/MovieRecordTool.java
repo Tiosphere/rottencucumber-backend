@@ -1,8 +1,6 @@
-package tk.rottencucumber.backend.util;
+package tk.rottencucumber.backend.record.movie;
 
 import tk.rottencucumber.backend.model.MovieModel;
-import tk.rottencucumber.backend.record.movie.MovieRecord;
-import tk.rottencucumber.backend.record.movie.MovieRecordBuilder;
 
 import java.util.ArrayList;
 import java.util.List;

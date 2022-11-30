@@ -3,15 +3,19 @@ package tk.rottencucumber.backend.controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import tk.rottencucumber.backend.model.*;
+import tk.rottencucumber.backend.model.GenreModel;
+import tk.rottencucumber.backend.model.LanguageModel;
+import tk.rottencucumber.backend.model.MovieModel;
+import tk.rottencucumber.backend.model.PlatformModel;
 import tk.rottencucumber.backend.record.movie.MovieRecord;
 import tk.rottencucumber.backend.record.movie.MovieRecordBuilder;
+import tk.rottencucumber.backend.record.movie.MovieRecordTool;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.record.simple.SimpleRecord;
 import tk.rottencucumber.backend.record.simple.SimpleRecordBuilder;
+import tk.rottencucumber.backend.record.simple.SimpleRecordTool;
 import tk.rottencucumber.backend.record.simple.SimpleRecordWithMoviesBuilder;
 import tk.rottencucumber.backend.service.*;
-import tk.rottencucumber.backend.util.MovieRecordTool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,11 +57,7 @@ public class HomeController {
     @GetMapping("/genres")
     public List<SimpleRecord> allGenres() {
         Iterable<GenreModel> all = genreService.getAll();
-        List<SimpleRecord> list = new ArrayList<>();
-        for (GenreModel model : all) {
-            list.add(SimpleRecordBuilder.create(model));
-        }
-        return list;
+        return SimpleRecordTool.createRecordsWithGen(all);
     }
 
     @GetMapping("/genre/{slug}")
@@ -72,11 +72,7 @@ public class HomeController {
     @GetMapping("/platforms")
     public List<SimpleRecord> allPlatforms() {
         Iterable<PlatformModel> all = platformService.getAll();
-        List<SimpleRecord> list = new ArrayList<>();
-        for (PlatformModel model : all) {
-            list.add(SimpleRecordBuilder.create(model));
-        }
-        return list;
+        return SimpleRecordTool.createRecordsWithPlat(all);
     }
 
     @GetMapping("/platform/{slug}")
@@ -88,24 +84,37 @@ public class HomeController {
         return new ObjectResponse(true, String.format("Successfully get genre %s", model.getName()), List.of(SimpleRecordWithMoviesBuilder.create(model)));
     }
 
-//    private record ActorResponse(ActorRecord actor, List<Record> movies) {}
-//    @GetMapping("/actor/{slug}")
-//    public ActorResponse actor(@PathVariable String slug) {
-//        ActorModel actor = actorService.findBySlug(slug);
-//    }
+    @GetMapping("/languages")
+    public List<SimpleRecord> allLanguages() {
+        Iterable<LanguageModel> all = languageService.getAll();
+        return SimpleRecordTool.createRecordsWithLang(all);
+    }
 
-//    private record WriterResponse(WriterRecord actor, List<Record> movies) {}
-//    @GetMapping("/writer/{slug}")
-//    public WriterResponse writer(@PathVariable String slug) {
-//        WriterModel writer = writerService.findBySlug(slug);
-//        return new WriterResponse(new WriterRecord(writer.getName(), writer.getSlug(), Base64Encoder.encode(writer.getImage()), writer.getType())); getMovieRecords(writer.getMovies()));
-//    }
+    @GetMapping("/language/{slug}")
+    public ObjectResponse language(@PathVariable String slug) {
+        LanguageModel model = languageService.findBySlug(slug);
+        if (model == null) {
+            return new ObjectResponse(false, "Can't find language with this name", null);
+        }
+        return new ObjectResponse(true, String.format("Successfully get language %s", model.getName()), List.of(SimpleRecordWithMoviesBuilder.create(model)));
+    }
 
-    private List<MovieRecord> getMovieRecords(Iterable<MovieModel> all) {
-        List<MovieRecord> list = new ArrayList<>();
-        for (MovieModel model : all) {
-            list.add(MovieRecordBuilder.create(model));
+    @GetMapping("/actors")
+    public List<SimpleRecord> allActors() {
+        Iterable<PlatformModel> all = platformService.getAll();
+        List<SimpleRecord> list = new ArrayList<>();
+        for (PlatformModel model : all) {
+            list.add(SimpleRecordBuilder.create(model));
         }
         return list;
+    }
+
+    @GetMapping("/actor/{slug}")
+    public ObjectResponse actor(@PathVariable String slug) {
+        LanguageModel model = languageService.findBySlug(slug);
+        if (model == null) {
+            return new ObjectResponse(false, "Can't find language with this name", null);
+        }
+        return new ObjectResponse(true, String.format("Successfully get language %s", model.getName()), List.of(SimpleRecordWithMoviesBuilder.create(model)));
     }
 }

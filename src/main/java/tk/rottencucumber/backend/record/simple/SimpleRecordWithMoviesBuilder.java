@@ -3,7 +3,7 @@ package tk.rottencucumber.backend.record.simple;
 import tk.rottencucumber.backend.model.GenreModel;
 import tk.rottencucumber.backend.model.LanguageModel;
 import tk.rottencucumber.backend.model.PlatformModel;
-import tk.rottencucumber.backend.util.MovieRecordTool;
+import tk.rottencucumber.backend.record.movie.MovieRecordTool;
 
 public class SimpleRecordWithMoviesBuilder {
 
