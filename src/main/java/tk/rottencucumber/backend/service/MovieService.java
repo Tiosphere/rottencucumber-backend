@@ -24,11 +24,15 @@ public class MovieService {
         return repository.findAllByPlatforms_slugOrderByReleaseDesc(slug);
     }
 
-    public Iterable<MovieModel> getMostViews() {
-        return repository.findMovieModelsByOrderByViewsDesc();
+    public void delete(MovieModel entity) {
+        repository.delete(entity);
     }
 
-    public Iterable<MovieModel> getLatest() {
-        return repository.findMovieModelsByOrderByReleaseDesc();
+    public Iterable<MovieModel> getAll() {
+        return repository.findAll();
+    }
+
+    public MovieModel getBySlug(String slug) {
+        return repository.findBySlug(slug);
     }
 }
