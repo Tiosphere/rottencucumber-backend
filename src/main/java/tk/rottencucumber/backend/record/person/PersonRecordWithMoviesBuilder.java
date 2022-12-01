@@ -17,7 +17,7 @@ public class PersonRecordWithMoviesBuilder {
                 model.getBirthPlace(),
                 model.getDescription(),
                 model.getBirthday(),
-                MovieRecordTool.getMovieRecords(model.getMovies())
+                MovieRecordTool.getMovieRecordList(model.getMovies())
         );
     }
 
@@ -31,7 +31,7 @@ public class PersonRecordWithMoviesBuilder {
                 model.getBirthPlace(),
                 model.getDescription(),
                 model.getBirthday(),
-                MovieRecordTool.getMovieRecords(model.getMovies())
+                MovieRecordTool.getMovieRecordList(model.getMovies())
         );
     }
 
@@ -45,7 +45,7 @@ public class PersonRecordWithMoviesBuilder {
                 model.getBirthPlace(),
                 model.getDescription(),
                 model.getBirthday(),
-                MovieRecordTool.getMovieRecords(model.getMovies())
+                MovieRecordTool.getMovieRecordList(model.getMovies())
         );
     }
 }

@@ -3,16 +3,14 @@ package tk.rottencucumber.backend.controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import tk.rottencucumber.backend.model.GenreModel;
-import tk.rottencucumber.backend.model.LanguageModel;
-import tk.rottencucumber.backend.model.MovieModel;
-import tk.rottencucumber.backend.model.PlatformModel;
+import tk.rottencucumber.backend.model.*;
 import tk.rottencucumber.backend.record.movie.MovieRecord;
 import tk.rottencucumber.backend.record.movie.MovieRecordBuilder;
 import tk.rottencucumber.backend.record.movie.MovieRecordTool;
+import tk.rottencucumber.backend.record.person.PersonRecord;
+import tk.rottencucumber.backend.record.person.PersonRecordTool;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.record.simple.SimpleRecord;
-import tk.rottencucumber.backend.record.simple.SimpleRecordBuilder;
 import tk.rottencucumber.backend.record.simple.SimpleRecordTool;
 import tk.rottencucumber.backend.record.simple.SimpleRecordWithMoviesBuilder;
 import tk.rottencucumber.backend.service.*;
@@ -42,7 +40,7 @@ public class HomeController {
     @GetMapping("/movies")
     public List<MovieRecord> allMovies() {
         Iterable<MovieModel> all = movieService.getAll();
-        return MovieRecordTool.getMovieRecords(all);
+        return MovieRecordTool.getMovieRecordList(all);
     }
 
     @GetMapping("/movie/{slug}")

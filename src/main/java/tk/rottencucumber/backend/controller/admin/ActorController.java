@@ -6,12 +6,12 @@ import tk.rottencucumber.backend.model.ActorModel;
 import tk.rottencucumber.backend.record.person.PersonCreateForm;
 import tk.rottencucumber.backend.record.person.PersonRecord;
 import tk.rottencucumber.backend.record.person.PersonRecordBuilder;
+import tk.rottencucumber.backend.record.person.PersonRecordTool;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.service.ActorService;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,12 +26,8 @@ public class ActorController {
 
     @GetMapping("/get/all")
     public List<PersonRecord> getAll() {
-        Iterable<ActorModel> entities = service.getAll();
-        List<PersonRecord> list = new ArrayList<>();
-        for (ActorModel model : entities) {
-            list.add(PersonRecordBuilder.create(model));
-        }
-        return list;
+        Iterable<ActorModel> all = service.getAll();
+        return PersonRecordTool.createRecordsWithAct(all);
     }
 
     @PostMapping("/delete/{slug}")

@@ -5,12 +5,12 @@ import tk.rottencucumber.backend.model.MovieModel;
 import tk.rottencucumber.backend.record.movie.MovieCreateForm;
 import tk.rottencucumber.backend.record.movie.MovieRecord;
 import tk.rottencucumber.backend.record.movie.MovieRecordBuilder;
+import tk.rottencucumber.backend.record.movie.MovieRecordTool;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.CodeResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.service.MovieService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -24,12 +24,8 @@ public class MovieController {
 
     @GetMapping("/get/all")
     public List<MovieRecord> getAll() {
-        Iterable<MovieModel> entities = service.getAll();
-        List<MovieRecord> list = new ArrayList<>();
-        for (MovieModel model : entities) {
-            list.add(MovieRecordBuilder.create(model));
-        }
-        return list;
+        Iterable<MovieModel> all = service.getAll();
+        return MovieRecordTool.getMovieRecordList(all);
     }
 
     @PostMapping("/delete/{slug}")

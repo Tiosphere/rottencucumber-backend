@@ -8,9 +8,9 @@ import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.record.simple.SimpleCreateForm;
 import tk.rottencucumber.backend.record.simple.SimpleRecord;
 import tk.rottencucumber.backend.record.simple.SimpleRecordBuilder;
+import tk.rottencucumber.backend.record.simple.SimpleRecordTool;
 import tk.rottencucumber.backend.service.GenreService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,12 +26,8 @@ public class GenreController {
 
     @GetMapping("/get/all")
     public List<SimpleRecord> getAll() {
-        Iterable<GenreModel> entities = service.getAll();
-        List<SimpleRecord> list = new ArrayList<>();
-        for (GenreModel model : entities) {
-            list.add(SimpleRecordBuilder.create(model));
-        }
-        return list;
+        Iterable<GenreModel> all = service.getAll();
+        return SimpleRecordTool.createRecordsWithGen(all);
     }
 
     @PostMapping("/delete/{slug}")

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class MovieRecordTool {
 
-    public static List<MovieRecord> getMovieRecords(Iterable<MovieModel> all) {
+    public static List<MovieRecord> getMovieRecordList(Iterable<MovieModel> all) {
         List<MovieRecord> list = new ArrayList<>();
         for (MovieModel model : all) {
             list.add(MovieRecordBuilder.create(model));

@@ -8,9 +8,9 @@ import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.record.simple.SimpleCreateForm;
 import tk.rottencucumber.backend.record.simple.SimpleRecord;
 import tk.rottencucumber.backend.record.simple.SimpleRecordBuilder;
+import tk.rottencucumber.backend.record.simple.SimpleRecordTool;
 import tk.rottencucumber.backend.service.LanguageService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,12 +26,8 @@ public class LanguageController {
 
     @GetMapping("/get/all")
     public List<SimpleRecord> getAll() {
-        Iterable<LanguageModel> entities = service.getAll();
-        List<SimpleRecord> list = new ArrayList<>();
-        for (LanguageModel model : entities) {
-            list.add(SimpleRecordBuilder.create(model));
-        }
-        return list;
+        Iterable<LanguageModel> all = service.getAll();
+        return SimpleRecordTool.createRecordsWithLang(all);
     }
 
     @PostMapping("/delete/{slug}")

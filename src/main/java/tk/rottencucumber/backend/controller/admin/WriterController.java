@@ -6,12 +6,12 @@ import tk.rottencucumber.backend.model.WriterModel;
 import tk.rottencucumber.backend.record.person.PersonCreateForm;
 import tk.rottencucumber.backend.record.person.PersonRecord;
 import tk.rottencucumber.backend.record.person.PersonRecordBuilder;
+import tk.rottencucumber.backend.record.person.PersonRecordTool;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.service.WriterService;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,19 +19,14 @@ import java.util.List;
 @PreAuthorize(value = "hasRole('ADMIN')")
 public class WriterController {
     private final WriterService service;
-
     public WriterController(WriterService service) {
         this.service = service;
     }
 
     @GetMapping("/get/all")
     public List<PersonRecord> getAll() {
-        Iterable<WriterModel> entities = service.getAll();
-        List<PersonRecord> list = new ArrayList<>();
-        for (WriterModel model : entities) {
-            list.add(PersonRecordBuilder.create(model));
-        }
-        return list;
+        Iterable<WriterModel> all = service.getAll();
+        return PersonRecordTool.createRecordsWithWri(all);
     }
 
     @PostMapping("/delete/{slug}")
