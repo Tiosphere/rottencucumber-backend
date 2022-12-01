@@ -8,12 +8,15 @@ import org.springframework.web.server.ResponseStatusException;
 import tk.rottencucumber.backend.model.UserModel;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.CodeResponse;
+import tk.rottencucumber.backend.record.response.ObjectResponse;
+import tk.rottencucumber.backend.record.user.UserRecordBuilder;
 import tk.rottencucumber.backend.security.JWTService;
 import tk.rottencucumber.backend.service.UserService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @RestController
@@ -25,7 +28,6 @@ public class AuthController {
     public AuthController(UserService userService, JWTService JWTService) {
         this.userService = userService;
         this.JWTService = JWTService;
-
     }
 
     @PostMapping("/signup")
@@ -37,8 +39,7 @@ public class AuthController {
         String message = passValidator(password1, password2);
         if (message != null) {
             return new CodeResponse(3, message);
-        }
-        if (username.isBlank()) {
+        } else if (username.isBlank()) {
             return new CodeResponse(1, "Username can't be empty.");
         } else if (email.isBlank()) {
             return new CodeResponse(2, "Email can't be empty.");
@@ -53,14 +54,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public BoolResponse Login(HttpServletRequest request, LoginForm form) {
-        System.out.println(form.username() + form.password());
+    public ObjectResponse Login(HttpServletRequest request, LoginForm form) {
         try {
             request.login(form.username(), form.password());
-            return new BoolResponse(true, JWTService.generateToken(form.username()));
+            return new ObjectResponse(true, JWTService.generateToken(form.username()), List.of(UserRecordBuilder.create(userService.findByUsername(form.username()))));
         } catch (ServletException e) {
-            e.printStackTrace();
-            return new BoolResponse(false, "Invalid username or password.");
+            return new ObjectResponse(false, "Invalid username or password.", null);
         }
     }
 
@@ -77,17 +76,16 @@ public class AuthController {
     @PostMapping("/forget")
     public BoolResponse forgetPass(ForgetPassForm form) {
         UserModel user = userService.findByEmail(form.email());
-        if (user != null) {
-            String pass = user.getPassword().substring(200);
-            String token = JWTService.generatePassToken(pass);
-            return new BoolResponse(true, token);
-        } else {
+        if (user == null) {
             return new BoolResponse(false, "Can't find user with this email.");
         }
+        String pass = user.getPassword().substring(200);
+        String token = JWTService.generatePassToken(pass);
+        return new BoolResponse(true, token);
     }
 
     @PostMapping("/forget/{token}")
-    public CodeResponse Post(NewPassForm form, @PathVariable String token) {
+    public CodeResponse newPass(NewPassForm form, @PathVariable String token) {
         if (!JWTService.valid(token)) {
             return new CodeResponse(2, "Your token was expire");
         }

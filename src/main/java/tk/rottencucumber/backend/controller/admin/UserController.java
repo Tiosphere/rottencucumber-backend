@@ -5,13 +5,9 @@ import org.springframework.web.bind.annotation.*;
 import tk.rottencucumber.backend.model.UserModel;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
-import tk.rottencucumber.backend.record.user.UserCreateForm;
-import tk.rottencucumber.backend.record.user.UserRecordWithID;
-import tk.rottencucumber.backend.record.user.UserRecordWithIdBuilder;
-import tk.rottencucumber.backend.record.user.UserUpdateForm;
+import tk.rottencucumber.backend.record.user.*;
 import tk.rottencucumber.backend.service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -32,13 +28,9 @@ public class UserController {
     }
 
     @GetMapping("/get/all")
-    public List<UserRecordWithID> getAll() {
+    public List<UserRecord> getAll() {
         Iterable<UserModel> all = service.getAll();
-        List<UserRecordWithID> list = new ArrayList<>();
-        for (UserModel model : all) {
-            list.add(UserRecordWithIdBuilder.create(model));
-        }
-        return list;
+        return UserRecordTool.createUserRecordList(all);
     }
 
     @GetMapping("/get/{slug}")
@@ -47,7 +39,7 @@ public class UserController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find user with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get user %s", model.getUsername()), List.of(UserRecordWithIdBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get user %s", model.getUsername()), List.of(UserRecordBuilder.create(model)));
     }
 
     @PostMapping("/update/{slug}")
