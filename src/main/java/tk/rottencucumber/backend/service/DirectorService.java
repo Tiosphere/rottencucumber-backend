@@ -22,7 +22,8 @@ public class DirectorService {
 
     public void createDirector(PersonCreateForm form) throws IOException {
         String name = form.name();
-        MultipartFile image = form.image();
+        byte[] image = null;
+        String type = null;
         Slugify slugify = Slugifier.getInstance();
         String slug = slugify.slugify(name);
         while (true) {
@@ -32,11 +33,11 @@ public class DirectorService {
                 break;
             }
         }
-        if (image == null) {
-            repository.save(new DirectorModel(name, slug, null, null, form.birthPlace(), form.birthday(), form.description()));
-            return;
+        if (!form.image().isEmpty()) {
+            image = form.image().getBytes();
+            type = form.image().getContentType();
         }
-        repository.save(new DirectorModel(name, slug, image.getContentType(), image.getBytes(), form.birthPlace(), form.birthday(), form.description()));
+        repository.save(new DirectorModel(name, slug, type, image, form.birthPlace(), form.birthday(), form.description()));
     }
 
     public void update(DirectorModel model, PersonCreateForm form) throws IOException {

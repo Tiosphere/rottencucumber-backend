@@ -21,7 +21,8 @@ public class ActorService {
 
     public void createActor(PersonCreateForm form) throws IOException {
         String name = form.name();
-        MultipartFile image = form.image();
+        byte[] image = null;
+        String type = null;
         Slugify slugify = Slugifier.getInstance();
         String slug = slugify.slugify(name);
         while (true) {
@@ -31,11 +32,11 @@ public class ActorService {
                 break;
             }
         }
-        if (image == null) {
-            repository.save(new ActorModel(name, slug, null, null, form.birthPlace(), form.birthday(), form.description()));
-            return;
+        if (!form.image().isEmpty()) {
+            image = form.image().getBytes();
+            type = form.image().getContentType();
         }
-        repository.save(new ActorModel(name, slug, image.getContentType(), image.getBytes(), form.birthPlace(), form.birthday(), form.description()));
+        repository.save(new ActorModel(name, slug, type, image, form.birthPlace(), form.birthday(), form.description()));
     }
 
     public void update(ActorModel model, PersonCreateForm form) throws IOException {
