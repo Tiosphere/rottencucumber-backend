@@ -12,20 +12,19 @@ import java.util.Set;
 @Table(name = "movies")
 @NoArgsConstructor
 public class MovieModel {
-
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable
     Set<GenreModel> genres;
-    @ManyToMany(cascade = CascadeType.REMOVE)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable
     Set<ActorModel> actors;
-    @ManyToMany(cascade = CascadeType.REMOVE)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable
     Set<DirectorModel> directors;
-    @ManyToMany(cascade = CascadeType.REMOVE)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable
     Set<WriterModel> writers;
-    @ManyToMany(cascade = CascadeType.REMOVE)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable
     Set<PlatformModel> platforms;
     @Id
@@ -44,7 +43,7 @@ public class MovieModel {
     @Column(name = "image")
     private byte[] image;
     @Column(name = "views")
-    private Integer views;
+    private Integer views = 0;
     @Column(name = "type")
     private String type;
     @ManyToOne
@@ -52,8 +51,7 @@ public class MovieModel {
     private LanguageModel language;
     @Column(name = "release_date", nullable = false)
     private LocalDate release;
-    //Reverse relations
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private Set<ReviewModel> reviews;
 
     public MovieModel(String name, String slug, String preview, LocalDate release, LanguageModel language, Set<ActorModel> actors, Set<WriterModel> writers, Set<DirectorModel> directors, Set<GenreModel> genres, Set<PlatformModel> platforms, byte[] image, String type, String summary) {
