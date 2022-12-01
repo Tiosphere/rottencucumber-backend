@@ -1,6 +1,7 @@
 package tk.rottencucumber.backend.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "reviews")
+@NoArgsConstructor
 public class ReviewModel {
 
     @Id
@@ -24,12 +26,19 @@ public class ReviewModel {
     private MovieModel movie;
     @Column(name = "rated", nullable = false)
     private Integer rated;
-    @Column(name = "comment")
+    @Column(name = "comment", columnDefinition = "mediumtext")
     private String comment;
     @Column(name = "created", nullable = false, updatable = false)
     @CreatedDate
-    private LocalDateTime created;
+    private LocalDateTime created = LocalDateTime.now();
     //Reverse relations
     @OneToMany(mappedBy = "review")
     private Set<LikeModel> likes;
+
+    public ReviewModel(UserModel user, MovieModel movie, Integer rated, String comment) {
+        this.user = user;
+        this.movie = movie;
+        this.rated = rated;
+        this.comment = comment;
+    }
 }
