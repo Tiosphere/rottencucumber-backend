@@ -3,9 +3,8 @@ package tk.rottencucumber.backend.controller.admin;
 import org.springframework.web.bind.annotation.*;
 import tk.rottencucumber.backend.model.MovieModel;
 import tk.rottencucumber.backend.record.movie.MovieCreateForm;
-import tk.rottencucumber.backend.record.movie.MovieRecord;
-import tk.rottencucumber.backend.record.movie.MovieRecordBuilder;
 import tk.rottencucumber.backend.record.movie.MovieRecordTool;
+import tk.rottencucumber.backend.record.movie.MovieSimpleRecord;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.CodeResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
@@ -23,9 +22,9 @@ public class MovieController {
     }
 
     @GetMapping("/get/all")
-    public List<MovieRecord> getAll() {
+    public List<MovieSimpleRecord> getAll() {
         Iterable<MovieModel> all = service.getAll();
-        return MovieRecordTool.getMovieRecordList(all);
+        return MovieRecordTool.createSimpleRecordList(all);
     }
 
     @PostMapping("/delete/{slug}")
@@ -58,6 +57,6 @@ public class MovieController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find movie with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get movie %s", model.getName()), List.of(MovieRecordBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get movie %s", model.getName()), List.of(MovieRecordTool.createRecord(model)));
     }
 }

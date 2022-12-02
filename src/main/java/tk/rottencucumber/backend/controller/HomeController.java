@@ -3,17 +3,15 @@ package tk.rottencucumber.backend.controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import tk.rottencucumber.backend.controller.admin.*;
 import tk.rottencucumber.backend.model.*;
 import tk.rottencucumber.backend.record.movie.MovieRecord;
 import tk.rottencucumber.backend.record.movie.MovieRecordTool;
-import tk.rottencucumber.backend.record.movie.MovieRecordWithReviewBuilder;
 import tk.rottencucumber.backend.record.person.PersonRecord;
 import tk.rottencucumber.backend.record.person.PersonRecordTool;
-import tk.rottencucumber.backend.record.person.PersonRecordWithMoviesBuilder;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.record.simple.SimpleRecord;
 import tk.rottencucumber.backend.record.simple.SimpleRecordTool;
-import tk.rottencucumber.backend.record.simple.SimpleRecordWithMoviesBuilder;
 import tk.rottencucumber.backend.service.*;
 
 import java.util.List;
@@ -42,7 +40,7 @@ public class HomeController {
     @GetMapping("/movies")
     public List<MovieRecord> allMovies() {
         Iterable<MovieModel> all = movieService.getAll();
-        return MovieRecordTool.getMovieRecordList(all);
+        return MovieRecordTool.createRecordList(all);
     }
 
     @GetMapping("/movie/{slug}")
@@ -51,13 +49,12 @@ public class HomeController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find movie with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get movie %s", model.getName()), List.of(MovieRecordWithReviewBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get movie %s", model.getName()), List.of(MovieRecordTool.createRecWithReview(model)));
     }
 
     @GetMapping("/genres")
     public List<SimpleRecord> allGenres() {
-        Iterable<GenreModel> all = genreService.getAll();
-        return SimpleRecordTool.createRecordsWithGen(all);
+        return new GenreController(genreService).getAll();
     }
 
     @GetMapping("/genre/{slug}")
@@ -66,13 +63,12 @@ public class HomeController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find genre with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get genre %s", model.getName()), List.of(SimpleRecordWithMoviesBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get genre %s", model.getName()), List.of(SimpleRecordTool.createRecWithMovies(model)));
     }
 
     @GetMapping("/platforms")
     public List<SimpleRecord> allPlatforms() {
-        Iterable<PlatformModel> all = platformService.getAll();
-        return SimpleRecordTool.createRecordsWithPlat(all);
+        return new PlatformController(platformService).getAll();
     }
 
     @GetMapping("/platform/{slug}")
@@ -81,13 +77,12 @@ public class HomeController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find genre with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get genre %s", model.getName()), List.of(SimpleRecordWithMoviesBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get genre %s", model.getName()), List.of(SimpleRecordTool.createRecWithMovies(model)));
     }
 
     @GetMapping("/languages")
     public List<SimpleRecord> allLanguages() {
-        Iterable<LanguageModel> all = languageService.getAll();
-        return SimpleRecordTool.createRecordsWithLang(all);
+        return new LanguageController(languageService).getAll();
     }
 
     @GetMapping("/language/{slug}")
@@ -96,13 +91,12 @@ public class HomeController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find language with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get language %s", model.getName()), List.of(SimpleRecordWithMoviesBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get language %s", model.getName()), List.of(SimpleRecordTool.createRecWithMovies(model)));
     }
 
     @GetMapping("/actors")
     public List<PersonRecord> allActors() {
-        Iterable<ActorModel> all = actorService.getAll();
-        return PersonRecordTool.createRecordsWithAct(all);
+        return new ActorController(actorService).getAll();
     }
 
     @GetMapping("/actor/{slug}")
@@ -111,13 +105,12 @@ public class HomeController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find actor with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get actor %s", model.getName()), List.of(PersonRecordWithMoviesBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get actor %s", model.getName()), List.of(PersonRecordTool.createRecWithMovies(model)));
     }
 
     @GetMapping("/directors")
     public List<PersonRecord> allDirectors() {
-        Iterable<DirectorModel> all = directorService.getAll();
-        return PersonRecordTool.createRecordsWithDir(all);
+        return new DirectorController(directorService).getAll();
     }
 
     @GetMapping("/director/{slug}")
@@ -126,13 +119,12 @@ public class HomeController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find director with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get director %s", model.getName()), List.of(PersonRecordWithMoviesBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get director %s", model.getName()), List.of(PersonRecordTool.createRecWithMovies(model)));
     }
 
     @GetMapping("/writers")
     public List<PersonRecord> allWriters() {
-        Iterable<WriterModel> all = writerService.getAll();
-        return PersonRecordTool.createRecordsWithWri(all);
+        return new WriterController(writerService).getAll();
     }
 
     @GetMapping("/writer/{slug}")
@@ -141,6 +133,6 @@ public class HomeController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find writer with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get writer %s", model.getName()), List.of(PersonRecordWithMoviesBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get writer %s", model.getName()), List.of(PersonRecordTool.createRecWithMovies(model)));
     }
 }

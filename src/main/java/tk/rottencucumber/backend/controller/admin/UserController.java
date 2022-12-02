@@ -5,7 +5,10 @@ import org.springframework.web.bind.annotation.*;
 import tk.rottencucumber.backend.model.UserModel;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
-import tk.rottencucumber.backend.record.user.*;
+import tk.rottencucumber.backend.record.user.UserCreateForm;
+import tk.rottencucumber.backend.record.user.UserRecord;
+import tk.rottencucumber.backend.record.user.UserRecordTool;
+import tk.rottencucumber.backend.record.user.UserUpdateForm;
 import tk.rottencucumber.backend.service.UserService;
 
 import java.util.List;
@@ -39,7 +42,7 @@ public class UserController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find user with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get user %s", model.getUsername()), List.of(UserRecordBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get user %s", model.getUsername()), List.of(UserRecordTool.createRecord(model)));
     }
 
     @PostMapping("/update/{slug}")

@@ -6,7 +6,6 @@ import tk.rottencucumber.backend.model.ReviewModel;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.record.review.ReviewRecord;
-import tk.rottencucumber.backend.record.review.ReviewRecordBuilder;
 import tk.rottencucumber.backend.record.review.ReviewRecordTool;
 import tk.rottencucumber.backend.service.ReviewService;
 
@@ -25,7 +24,7 @@ public class ReviewController {
     @GetMapping("/get/all")
     public List<ReviewRecord> getAll() {
         Iterable<ReviewModel> all = service.getAll();
-        return ReviewRecordTool.createReviewRecordList(all);
+        return ReviewRecordTool.createRecordList(all);
     }
 
     @PostMapping("/delete/{id}")
@@ -44,6 +43,6 @@ public class ReviewController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find review with this id", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get review %d", model.getId()), List.of(ReviewRecordBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get review %d", model.getId()), List.of(ReviewRecordTool.createRecord(model)));
     }
 }

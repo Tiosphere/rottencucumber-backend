@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import tk.rottencucumber.backend.model.DirectorModel;
 import tk.rottencucumber.backend.record.person.PersonCreateForm;
 import tk.rottencucumber.backend.record.person.PersonRecord;
-import tk.rottencucumber.backend.record.person.PersonRecordBuilder;
 import tk.rottencucumber.backend.record.person.PersonRecordTool;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
@@ -27,7 +26,7 @@ public class DirectorController {
     @GetMapping("/get/all")
     public List<PersonRecord> getAll() {
         Iterable<DirectorModel> all = service.getAll();
-        return PersonRecordTool.createRecordsWithDir(all);
+        return PersonRecordTool.createByDirectorRecordList(all);
     }
 
     @PostMapping("/delete/{slug}")
@@ -71,6 +70,6 @@ public class DirectorController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find director with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get director %s", model.getName()), List.of(PersonRecordBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get director %s", model.getName()), List.of(PersonRecordTool.createRecord(model)));
     }
 }

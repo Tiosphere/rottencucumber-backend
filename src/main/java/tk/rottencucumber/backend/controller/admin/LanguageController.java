@@ -7,7 +7,6 @@ import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.record.simple.SimpleCreateForm;
 import tk.rottencucumber.backend.record.simple.SimpleRecord;
-import tk.rottencucumber.backend.record.simple.SimpleRecordBuilder;
 import tk.rottencucumber.backend.record.simple.SimpleRecordTool;
 import tk.rottencucumber.backend.service.LanguageService;
 
@@ -27,7 +26,7 @@ public class LanguageController {
     @GetMapping("/get/all")
     public List<SimpleRecord> getAll() {
         Iterable<LanguageModel> all = service.getAll();
-        return SimpleRecordTool.createRecordsWithLang(all);
+        return SimpleRecordTool.createByLangRecordList(all);
     }
 
     @PostMapping("/delete/{slug}")
@@ -64,6 +63,6 @@ public class LanguageController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find language with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get language %s", model.getName()), List.of(SimpleRecordBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get language %s", model.getName()), List.of(SimpleRecordTool.createRecord(model)));
     }
 }

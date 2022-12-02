@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import tk.rottencucumber.backend.model.WriterModel;
 import tk.rottencucumber.backend.record.person.PersonCreateForm;
 import tk.rottencucumber.backend.record.person.PersonRecord;
-import tk.rottencucumber.backend.record.person.PersonRecordBuilder;
 import tk.rottencucumber.backend.record.person.PersonRecordTool;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
@@ -19,6 +18,7 @@ import java.util.List;
 @PreAuthorize(value = "hasRole('ADMIN')")
 public class WriterController {
     private final WriterService service;
+
     public WriterController(WriterService service) {
         this.service = service;
     }
@@ -26,7 +26,7 @@ public class WriterController {
     @GetMapping("/get/all")
     public List<PersonRecord> getAll() {
         Iterable<WriterModel> all = service.getAll();
-        return PersonRecordTool.createRecordsWithWri(all);
+        return PersonRecordTool.createByWriterRecordList(all);
     }
 
     @PostMapping("/delete/{slug}")
@@ -70,6 +70,6 @@ public class WriterController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find writer with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get writer %s", model.getName()), List.of(PersonRecordBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get writer %s", model.getName()), List.of(PersonRecordTool.createRecord(model)));
     }
 }

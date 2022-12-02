@@ -9,7 +9,7 @@ import tk.rottencucumber.backend.model.UserModel;
 import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.CodeResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
-import tk.rottencucumber.backend.record.user.UserRecordBuilder;
+import tk.rottencucumber.backend.record.user.UserRecordTool;
 import tk.rottencucumber.backend.security.JWTService;
 import tk.rottencucumber.backend.service.UserService;
 
@@ -57,7 +57,7 @@ public class AuthController {
     public ObjectResponse Login(HttpServletRequest request, LoginForm form) {
         try {
             request.login(form.username(), form.password());
-            return new ObjectResponse(true, JWTService.generateToken(form.username()), List.of(UserRecordBuilder.create(userService.findByUsername(form.username()))));
+            return new ObjectResponse(true, JWTService.generateToken(form.username()), List.of(UserRecordTool.createRecord(userService.findByUsername(form.username()))));
         } catch (ServletException e) {
             return new ObjectResponse(false, "Invalid username or password.", null);
         }
