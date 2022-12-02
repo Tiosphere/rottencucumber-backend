@@ -5,17 +5,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import tk.rottencucumber.backend.model.*;
 import tk.rottencucumber.backend.record.movie.MovieRecord;
-import tk.rottencucumber.backend.record.movie.MovieRecordBuilder;
 import tk.rottencucumber.backend.record.movie.MovieRecordTool;
+import tk.rottencucumber.backend.record.movie.MovieRecordWithReviewBuilder;
 import tk.rottencucumber.backend.record.person.PersonRecord;
 import tk.rottencucumber.backend.record.person.PersonRecordTool;
+import tk.rottencucumber.backend.record.person.PersonRecordWithMoviesBuilder;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
 import tk.rottencucumber.backend.record.simple.SimpleRecord;
 import tk.rottencucumber.backend.record.simple.SimpleRecordTool;
 import tk.rottencucumber.backend.record.simple.SimpleRecordWithMoviesBuilder;
 import tk.rottencucumber.backend.service.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -25,15 +25,17 @@ public class HomeController {
     private final PlatformService platformService;
     private final LanguageService languageService;
     private final ActorService actorService;
+    private final DirectorService directorService;
     private final WriterService writerService;
 
 
-    public HomeController(MovieService movieService, GenreService genreService, PlatformService platformService, LanguageService languageService, ActorService actorService, WriterService writerService) {
+    public HomeController(MovieService movieService, GenreService genreService, PlatformService platformService, LanguageService languageService, ActorService actorService, DirectorService directorService, WriterService writerService) {
         this.movieService = movieService;
         this.genreService = genreService;
         this.platformService = platformService;
         this.languageService = languageService;
         this.actorService = actorService;
+        this.directorService = directorService;
         this.writerService = writerService;
     }
 
@@ -49,7 +51,7 @@ public class HomeController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find movie with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get movie %s", model.getName()), List.of(MovieRecordBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get movie %s", model.getName()), List.of(MovieRecordWithReviewBuilder.create(model)));
     }
 
     @GetMapping("/genres")
@@ -98,21 +100,47 @@ public class HomeController {
     }
 
     @GetMapping("/actors")
-    public List<SimpleRecord> allActors() {
-        Iterable<PlatformModel> all = platformService.getAll();
-        List<SimpleRecord> list = new ArrayList<>();
-        for (PlatformModel model : all) {
-            list.add(SimpleRecordBuilder.create(model));
-        }
-        return list;
+    public List<PersonRecord> allActors() {
+        Iterable<ActorModel> all = actorService.getAll();
+        return PersonRecordTool.createRecordsWithAct(all);
     }
 
     @GetMapping("/actor/{slug}")
     public ObjectResponse actor(@PathVariable String slug) {
-        LanguageModel model = languageService.findBySlug(slug);
+        ActorModel model = actorService.findBySlug(slug);
         if (model == null) {
-            return new ObjectResponse(false, "Can't find language with this name", null);
+            return new ObjectResponse(false, "Can't find actor with this name", null);
         }
-        return new ObjectResponse(true, String.format("Successfully get language %s", model.getName()), List.of(SimpleRecordWithMoviesBuilder.create(model)));
+        return new ObjectResponse(true, String.format("Successfully get actor %s", model.getName()), List.of(PersonRecordWithMoviesBuilder.create(model)));
+    }
+
+    @GetMapping("/directors")
+    public List<PersonRecord> allDirectors() {
+        Iterable<DirectorModel> all = directorService.getAll();
+        return PersonRecordTool.createRecordsWithDir(all);
+    }
+
+    @GetMapping("/director/{slug}")
+    public ObjectResponse director(@PathVariable String slug) {
+        DirectorModel model = directorService.findBySlug(slug);
+        if (model == null) {
+            return new ObjectResponse(false, "Can't find director with this name", null);
+        }
+        return new ObjectResponse(true, String.format("Successfully get director %s", model.getName()), List.of(PersonRecordWithMoviesBuilder.create(model)));
+    }
+
+    @GetMapping("/writers")
+    public List<PersonRecord> allWriters() {
+        Iterable<WriterModel> all = writerService.getAll();
+        return PersonRecordTool.createRecordsWithWri(all);
+    }
+
+    @GetMapping("/writer/{slug}")
+    public ObjectResponse writer(@PathVariable String slug) {
+        WriterModel model = writerService.findBySlug(slug);
+        if (model == null) {
+            return new ObjectResponse(false, "Can't find writer with this name", null);
+        }
+        return new ObjectResponse(true, String.format("Successfully get writer %s", model.getName()), List.of(PersonRecordWithMoviesBuilder.create(model)));
     }
 }
