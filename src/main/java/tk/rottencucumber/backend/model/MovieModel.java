@@ -1,5 +1,6 @@
 package tk.rottencucumber.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,19 +15,19 @@ import java.util.Set;
 public class MovieModel {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable
-    Set<GenreModel> genres;
+    private Set<GenreModel> genres;
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable
-    Set<ActorModel> actors;
+    private Set<ActorModel> actors;
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable
-    Set<DirectorModel> directors;
+    private Set<DirectorModel> directors;
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable
-    Set<WriterModel> writers;
+    private Set<WriterModel> writers;
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable
-    Set<PlatformModel> platforms;
+    private Set<PlatformModel> platforms;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -46,6 +47,7 @@ public class MovieModel {
     private Integer views = 0;
     @Column(name = "type")
     private String type;
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "language_id", nullable = false)
     private LanguageModel language;

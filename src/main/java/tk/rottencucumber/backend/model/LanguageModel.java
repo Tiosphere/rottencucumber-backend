@@ -1,5 +1,6 @@
 package tk.rottencucumber.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,7 @@ public class LanguageModel {
     private String slug;
     //Reverse relations
     @OneToMany(mappedBy = "language", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private Set<MovieModel> movies;
 
     public LanguageModel(String name, String slug) {
