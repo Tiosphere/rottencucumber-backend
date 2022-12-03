@@ -2,6 +2,8 @@ package tk.rottencucumber.backend.service;
 
 import com.github.slugify.Slugify;
 import net.bytebuddy.utility.RandomString;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import tk.rottencucumber.backend.model.PlatformModel;
 import tk.rottencucumber.backend.repository.PlatformRepository;
@@ -16,10 +18,12 @@ public class PlatformService {
         this.repository = repository;
     }
 
+    @CacheEvict(cacheNames = "platform")
     public void createPlatform(String name) {
         repository.save(new PlatformModel(name, Slugifier.getInstance().slugify(name)));
     }
 
+    @CacheEvict(cacheNames = "platform")
     public void update(PlatformModel model, String name) {
         Slugify slugify = Slugifier.getInstance();
         String slug = slugify.slugify(name);
@@ -41,10 +45,12 @@ public class PlatformService {
         return repository.findBySlug(slug);
     }
 
+    @CacheEvict(cacheNames = "platform")
     public void delete(PlatformModel entity) {
         repository.delete(entity);
     }
 
+    @Cacheable(cacheNames = "platform")
     public Iterable<PlatformModel> getAll() {
         return repository.findAll();
     }

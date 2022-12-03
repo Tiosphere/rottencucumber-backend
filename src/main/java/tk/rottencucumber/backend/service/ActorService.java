@@ -2,6 +2,8 @@ package tk.rottencucumber.backend.service;
 
 import com.github.slugify.Slugify;
 import net.bytebuddy.utility.RandomString;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tk.rottencucumber.backend.model.ActorModel;
@@ -19,6 +21,7 @@ public class ActorService {
         this.repository = repository;
     }
 
+    @CacheEvict(cacheNames = "actors")
     public void createActor(PersonCreateForm form) throws IOException {
         String name = form.name();
         byte[] image = null;
@@ -39,6 +42,7 @@ public class ActorService {
         repository.save(new ActorModel(name, slug, type, image, form.birthPlace(), form.birthday(), form.description()));
     }
 
+    @CacheEvict(cacheNames = "actors")
     public void update(ActorModel model, PersonCreateForm form) throws IOException {
         String name = form.name();
         Slugify slugify = Slugifier.getInstance();
@@ -72,10 +76,12 @@ public class ActorService {
         return repository.findBySlug(slug);
     }
 
+    @CacheEvict(cacheNames = "actors")
     public void delete(ActorModel entity) {
         repository.delete(entity);
     }
 
+    @Cacheable("actors")
     public Iterable<ActorModel> getAll() {
         return repository.findAll();
     }

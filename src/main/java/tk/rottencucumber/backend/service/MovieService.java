@@ -2,6 +2,8 @@ package tk.rottencucumber.backend.service;
 
 import com.github.slugify.Slugify;
 import net.bytebuddy.utility.RandomString;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import tk.rottencucumber.backend.model.*;
 import tk.rottencucumber.backend.record.movie.MovieCreateForm;
@@ -37,14 +39,17 @@ public class MovieService {
         return repository.findBySlug(slug);
     }
 
+    @CacheEvict(cacheNames = "movies")
     public void delete(MovieModel entity) {
         repository.delete(entity);
     }
 
+    @Cacheable(cacheNames = "movies")
     public Iterable<MovieModel> getAll() {
         return repository.findAll();
     }
 
+    @CacheEvict(cacheNames = "movies")
     public CodeResponse createMovie(MovieCreateForm form) {
         Set<ActorModel> actors = new HashSet<>();
         Set<DirectorModel> directors = new HashSet<>();
@@ -129,6 +134,7 @@ public class MovieService {
         return new CodeResponse(0, String.format("Successfully created movie %s", form.name()));
     }
 
+    @CacheEvict(cacheNames = "movies")
     public CodeResponse update(MovieModel entity, MovieCreateForm form) {
         Set<ActorModel> actors = new HashSet<>();
         Set<DirectorModel> directors = new HashSet<>();
