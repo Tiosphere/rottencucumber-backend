@@ -1,17 +1,27 @@
 package tk.rottencucumber.backend.controller;
 
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import tk.rottencucumber.backend.controller.admin.*;
 import tk.rottencucumber.backend.model.*;
 import tk.rottencucumber.backend.record.movie.MovieRecord;
 import tk.rottencucumber.backend.record.movie.MovieRecordTool;
 import tk.rottencucumber.backend.record.person.PersonRecord;
 import tk.rottencucumber.backend.record.person.PersonRecordTool;
+import tk.rottencucumber.backend.record.response.BoolResponse;
 import tk.rottencucumber.backend.record.response.ObjectResponse;
+import tk.rottencucumber.backend.record.review.ReviewCreateForm;
 import tk.rottencucumber.backend.record.simple.SimpleRecord;
 import tk.rottencucumber.backend.record.simple.SimpleRecordTool;
+import tk.rottencucumber.backend.record.user.UserRecordTool;
 import tk.rottencucumber.backend.service.*;
 
 import java.util.List;
@@ -25,9 +35,11 @@ public class HomeController {
     private final ActorService actorService;
     private final DirectorService directorService;
     private final WriterService writerService;
+    private final UserService userService;
+    private final ReviewService reviewService;
 
 
-    public HomeController(MovieService movieService, GenreService genreService, PlatformService platformService, LanguageService languageService, ActorService actorService, DirectorService directorService, WriterService writerService) {
+    public HomeController(MovieService movieService, GenreService genreService, PlatformService platformService, LanguageService languageService, ActorService actorService, DirectorService directorService, WriterService writerService, UserService userService, ReviewService reviewService) {
         this.movieService = movieService;
         this.genreService = genreService;
         this.platformService = platformService;
@@ -35,6 +47,8 @@ public class HomeController {
         this.actorService = actorService;
         this.directorService = directorService;
         this.writerService = writerService;
+        this.userService = userService;
+        this.reviewService = reviewService;
     }
 
     @GetMapping("/movies")
@@ -52,6 +66,7 @@ public class HomeController {
         return new ObjectResponse(true, String.format("Successfully get movie %s", model.getName()), List.of(MovieRecordTool.createRecWithReview(model)));
     }
 
+    @Cacheable("genres")
     @GetMapping("/genres")
     public List<SimpleRecord> allGenres() {
         return new GenreController(genreService).getAll();
@@ -134,5 +149,35 @@ public class HomeController {
             return new ObjectResponse(false, "Can't find writer with this name", null);
         }
         return new ObjectResponse(true, String.format("Successfully get writer %s", model.getName()), List.of(PersonRecordTool.createRecWithMovies(model)));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/review/{slug}")
+    // require movie slug
+    public BoolResponse review(@PathVariable String slug, ReviewCreateForm form) {
+        MovieModel movie = movieService.findBySlug(slug);
+        if (movie == null) {
+            return new BoolResponse(false, "Movie doesn't not exist");
+        }
+        UserModel user = userService.findByUsername(form.username());
+        if (user == null) {
+            return new BoolResponse(false, "User doesn't not exist");
+        }
+        reviewService.createReview(user, movie, form.rated(), form.comment());
+        return new BoolResponse(true, "Successfully add new review");
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/user/{slug}")
+    public ObjectResponse userProfile(@PathVariable String slug) {
+        UserModel userModel = userService.findBySlug(slug);
+        if (userModel == null) {
+            return new ObjectResponse(false, "User doesn't not exist", null);
+        }
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!user.getUsername().equals(userModel.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        return new ObjectResponse(true, "Successfully retieve user", List.of(UserRecordTool.createRecWithFav(userModel)));
     }
 }

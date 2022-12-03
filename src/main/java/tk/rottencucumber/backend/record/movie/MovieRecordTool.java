@@ -1,6 +1,7 @@
 package tk.rottencucumber.backend.record.movie;
 
 import tk.rottencucumber.backend.model.MovieModel;
+import tk.rottencucumber.backend.model.UserModel;
 import tk.rottencucumber.backend.record.person.PersonRecordTool;
 import tk.rottencucumber.backend.record.review.ReviewRecordTool;
 import tk.rottencucumber.backend.record.simple.SimpleRecordTool;
@@ -69,7 +70,8 @@ public class MovieRecordTool {
                 PersonRecordTool.createByActorRecordList(model.getActors()),
                 PersonRecordTool.createByDirectorRecordList(model.getDirectors()),
                 PersonRecordTool.createByWriterRecordList(model.getWriters()),
-                ReviewRecordTool.createRecordList(model.getReviews())
+                ReviewRecordTool.createRecordList(model.getReviews()),
+                model.getUsers().stream().map(UserModel::getUsername).toList()
         );
     }
 

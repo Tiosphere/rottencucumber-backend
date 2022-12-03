@@ -24,6 +24,7 @@ public record MovieRecordWithReview(
         List<PersonRecord> actors,
         List<PersonRecord> directors,
         List<PersonRecord> writers,
-        List<ReviewRecord> reviews
+        List<ReviewRecord> reviews,
+        List<String> users
 ) {
 }
