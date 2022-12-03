@@ -40,6 +40,7 @@ public class GenreService {
         model.setName(name);
         repository.save(model);
     }
+
     public GenreModel findBySlug(String slug) {
         return repository.findBySlug(slug);
     }

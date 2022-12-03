@@ -11,5 +11,4 @@ public interface ActorRepository extends CrudRepository<ActorModel, Long> {
 
     ActorModel findBySlug(String slug);
 
-    Iterable<ActorModel> findAllByNameContainsIgnoreCase(String name);
 }

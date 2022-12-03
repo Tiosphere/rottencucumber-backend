@@ -10,5 +10,4 @@ public interface WriterRepository extends CrudRepository<WriterModel, Long> {
 
     WriterModel findBySlug(String slug);
 
-    Iterable<WriterModel> findAllByNameContainsIgnoreCase(String name);
 }
