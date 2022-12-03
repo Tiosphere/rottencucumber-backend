@@ -29,8 +29,11 @@ public class UserModel extends AbstractModel {
     //Reverse relations
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<ReviewModel> reviews;
+    @ManyToMany(mappedBy = "users", cascade = CascadeType.REMOVE)
+    private Set<MovieModel> movies;
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<LikeModel> likes;
+
     public UserModel(String username, String slug, String email, String password, Boolean isStaff) {
         this.username = username;
         this.slug = slug;

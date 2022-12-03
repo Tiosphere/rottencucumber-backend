@@ -31,6 +31,9 @@ public class MovieModel extends StarterModel {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable
     private Set<PlatformModel> platforms;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable
+    private Set<UserModel> users;
     @Column(name = "summary", columnDefinition = "mediumtext")
     private String summary;
     @Column(name = "preview", nullable = false)
