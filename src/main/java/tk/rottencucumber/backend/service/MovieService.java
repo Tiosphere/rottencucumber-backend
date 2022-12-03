@@ -90,9 +90,8 @@ public class MovieService {
             }
             genres.add(model);
         }
+
         String name = form.name();
-        byte[] image = null;
-        String type = null;
         Slugify slugify = Slugifier.getInstance();
         String slug = slugify.slugify(name);
         while (true) {
@@ -102,6 +101,8 @@ public class MovieService {
                 break;
             }
         }
+        byte[] image = null;
+        String type = null;
         if (!form.image().isEmpty()) {
             try {
                 image = form.image().getBytes();
@@ -176,7 +177,7 @@ public class MovieService {
         String name = form.name();
         Slugify slugify = Slugifier.getInstance();
         String slug = slugify.slugify(name);
-        if (!entity.getName().equals(name)) {
+        if (!entity.getSlug().equals(slug)) {
             while (true) {
                 if (repository.existsBySlug(slug)) {
                     slug = slugify.slugify(slug.concat(RandomString.hashOf(4)));
@@ -184,9 +185,9 @@ public class MovieService {
                     break;
                 }
             }
-            entity.setName(name);
             entity.setSlug(slug);
         }
+        entity.setName(name);
         byte[] image = null;
         String type = null;
         if (!form.image().isEmpty()) {

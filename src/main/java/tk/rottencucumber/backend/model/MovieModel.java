@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tk.rottencucumber.backend.model.extend.StarterModel;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -14,7 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "movies")
 @NoArgsConstructor
-public class MovieModel {
+public class MovieModel extends StarterModel {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable
     private Set<GenreModel> genres;
@@ -30,14 +31,6 @@ public class MovieModel {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable
     private Set<PlatformModel> platforms;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
-    @Column(name = "slug", nullable = false, unique = true)
-    private String slug;
     @Column(name = "summary", columnDefinition = "mediumtext")
     private String summary;
     @Column(name = "preview", nullable = false)

@@ -19,9 +19,9 @@ public class GenreService {
         repository.save(new GenreModel(name, Slugifier.getInstance().slugify(name)));
     }
     public void update(GenreModel model, String name) {
-        if (!name.equals(model.getName())) {
-            Slugify slugify = Slugifier.getInstance();
-            String slug = slugify.slugify(name);
+        Slugify slugify = Slugifier.getInstance();
+        String slug = slugify.slugify(name);
+        if (!slug.equals(model.getSlug())) {
             while (true) {
                 if (repository.existsBySlug(slug)) {
                     slug = slugify.slugify(slug.concat(RandomString.hashOf(4)));
@@ -29,9 +29,9 @@ public class GenreService {
                     break;
                 }
             }
-            model.setName(name);
             model.setSlug(slug);
         }
+        model.setName(name);
         repository.save(model);
     }
     public GenreModel findBySlug(String slug) {

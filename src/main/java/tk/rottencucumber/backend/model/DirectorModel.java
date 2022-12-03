@@ -3,6 +3,7 @@ package tk.rottencucumber.backend.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tk.rottencucumber.backend.model.extend.StarterModel;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -13,16 +14,8 @@ import java.util.Set;
 @Entity
 @Table(name = "directors")
 @NoArgsConstructor
-public class DirectorModel {
+public class DirectorModel extends StarterModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
-    @Column(name = "slug", nullable = false, unique = true)
-    private String slug;
     @Lob
     @Column(name = "image")
     private byte[] image;

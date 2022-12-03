@@ -4,8 +4,12 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tk.rottencucumber.backend.model.extend.StarterModel;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.Set;
 
 @Getter
@@ -13,16 +17,8 @@ import java.util.Set;
 @Entity
 @Table(name = "languages")
 @NoArgsConstructor
-public class LanguageModel {
+public class LanguageModel extends StarterModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
-    @Column(name = "slug", nullable = false, unique = true)
-    private String slug;
     //Reverse relations
     @OneToMany(mappedBy = "language", cascade = CascadeType.REMOVE)
     @JsonManagedReference

@@ -3,8 +3,12 @@ package tk.rottencucumber.backend.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tk.rottencucumber.backend.model.extend.StarterModel;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.util.Set;
 
 @Getter
@@ -12,16 +16,8 @@ import java.util.Set;
 @Entity
 @Table(name = "platforms")
 @NoArgsConstructor
-public class PlatformModel {
+public class PlatformModel extends StarterModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
-    @Column(name = "slug", nullable = false, unique = true)
-    private String slug;
     //Reverse relations
     @ManyToMany(mappedBy = "platforms", cascade = CascadeType.REMOVE)
     private Set<MovieModel> movies;

@@ -1,8 +1,9 @@
 package tk.rottencucumber.backend.service;
 
 import org.springframework.stereotype.Service;
+import tk.rottencucumber.backend.model.MovieModel;
 import tk.rottencucumber.backend.model.ReviewModel;
-import tk.rottencucumber.backend.record.person.PersonCreateForm;
+import tk.rottencucumber.backend.model.UserModel;
 import tk.rottencucumber.backend.repository.ReviewRepository;
 
 @Service
@@ -13,7 +14,8 @@ public class ReviewService {
         this.repository = repository;
     }
 
-    public void createReview(PersonCreateForm form) {
+    public void createReview(UserModel user, MovieModel movie, Integer rated, String comment) {
+        repository.save(new ReviewModel(user, movie, rated, comment));
     }
 
     public ReviewModel findById(Long id) {

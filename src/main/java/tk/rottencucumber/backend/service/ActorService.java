@@ -41,10 +41,9 @@ public class ActorService {
 
     public void update(ActorModel model, PersonCreateForm form) throws IOException {
         String name = form.name();
-        MultipartFile image = form.image();
-        if (!name.equals(model.getName())) {
-            Slugify slugify = Slugifier.getInstance();
-            String slug = slugify.slugify(name);
+        Slugify slugify = Slugifier.getInstance();
+        String slug = slugify.slugify(name);
+        if (!slug.equals(model.getSlug())) {
             while (true) {
                 if (repository.existsBySlug(slug)) {
                     slug = slugify.slugify(slug.concat(RandomString.hashOf(4)));
@@ -52,9 +51,10 @@ public class ActorService {
                     break;
                 }
             }
-            model.setName(name);
             model.setSlug(slug);
         }
+        model.setName(name);
+        MultipartFile image = form.image();
         if (image.isEmpty()) {
             model.setImage(null);
             model.setType(null);

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
+import tk.rottencucumber.backend.model.extend.AbstractModel;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,12 +15,8 @@ import java.util.Set;
 @Entity
 @Table(name = "reviews")
 @NoArgsConstructor
-public class ReviewModel {
+public class ReviewModel extends AbstractModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private UserModel user;

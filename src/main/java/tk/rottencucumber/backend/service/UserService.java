@@ -41,9 +41,9 @@ public class UserService {
     }
 
     public void update(UserModel model, String username, String email) {
-        if (!username.equals(model.getUsername())) {
-            Slugify slugify = Slugifier.getInstance();
-            String slug = slugify.slugify(username);
+        Slugify slugify = Slugifier.getInstance();
+        String slug = slugify.slugify(username);
+        if (!slug.equals(model.getSlug())) {
             while (true) {
                 if (repository.existsBySlug(slug)) {
                     slug = slugify.slugify(slug.concat(RandomString.hashOf(4)));
@@ -51,9 +51,9 @@ public class UserService {
                     break;
                 }
             }
-            model.setUsername(username);
             model.setSlug(slug);
         }
+        model.setUsername(username);
         model.setEmail(email);
         repository.save(model);
     }

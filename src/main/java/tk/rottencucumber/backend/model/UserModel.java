@@ -3,6 +3,7 @@ package tk.rottencucumber.backend.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tk.rottencucumber.backend.model.extend.AbstractModel;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -13,12 +14,8 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
-public class UserModel {
+public class UserModel extends AbstractModel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
     @Column(name = "username", nullable = false, unique = true)
     private String username;
     @Column(name = "slug", nullable = false, unique = true)
