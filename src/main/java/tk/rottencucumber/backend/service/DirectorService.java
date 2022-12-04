@@ -3,7 +3,6 @@ package tk.rottencucumber.backend.service;
 import com.github.slugify.Slugify;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tk.rottencucumber.backend.model.DirectorModel;
@@ -82,7 +81,6 @@ public class DirectorService {
         repository.delete(entity);
     }
 
-    @Cacheable(cacheNames = "directors")
     public Iterable<DirectorModel> getAll() {
         return repository.findAll();
     }

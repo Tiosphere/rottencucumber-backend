@@ -38,7 +38,6 @@ public class HomeController {
     private final UserService userService;
     private final ReviewService reviewService;
 
-
     public HomeController(MovieService movieService, GenreService genreService, PlatformService platformService, LanguageService languageService, ActorService actorService, DirectorService directorService, WriterService writerService, UserService userService, ReviewService reviewService) {
         this.movieService = movieService;
         this.genreService = genreService;
@@ -51,6 +50,7 @@ public class HomeController {
         this.reviewService = reviewService;
     }
 
+    @Cacheable(cacheNames = "movies")
     @GetMapping("/movies")
     public List<MovieRecord> allMovies() {
         Iterable<MovieModel> all = movieService.getAll();
@@ -66,7 +66,7 @@ public class HomeController {
         return new ObjectResponse(true, String.format("Successfully get movie %s", model.getName()), List.of(MovieRecordTool.createRecWithReview(model)));
     }
 
-    @Cacheable("genres")
+    @Cacheable(cacheNames = "genres")
     @GetMapping("/genres")
     public List<SimpleRecord> allGenres() {
         return new GenreController(genreService).getAll();
@@ -81,6 +81,7 @@ public class HomeController {
         return new ObjectResponse(true, String.format("Successfully get genre %s", model.getName()), List.of(SimpleRecordTool.createRecWithMovies(model)));
     }
 
+    @Cacheable(cacheNames = "platform")
     @GetMapping("/platforms")
     public List<SimpleRecord> allPlatforms() {
         return new PlatformController(platformService).getAll();
@@ -95,6 +96,7 @@ public class HomeController {
         return new ObjectResponse(true, String.format("Successfully get genre %s", model.getName()), List.of(SimpleRecordTool.createRecWithMovies(model)));
     }
 
+    @Cacheable(cacheNames = "language")
     @GetMapping("/languages")
     public List<SimpleRecord> allLanguages() {
         return new LanguageController(languageService).getAll();
@@ -109,6 +111,7 @@ public class HomeController {
         return new ObjectResponse(true, String.format("Successfully get language %s", model.getName()), List.of(SimpleRecordTool.createRecWithMovies(model)));
     }
 
+    @Cacheable("actors")
     @GetMapping("/actors")
     public List<PersonRecord> allActors() {
         return new ActorController(actorService).getAll();
@@ -123,6 +126,7 @@ public class HomeController {
         return new ObjectResponse(true, String.format("Successfully get actor %s", model.getName()), List.of(PersonRecordTool.createRecWithMovies(model)));
     }
 
+    @Cacheable(cacheNames = "directors")
     @GetMapping("/directors")
     public List<PersonRecord> allDirectors() {
         return new DirectorController(directorService).getAll();
@@ -137,6 +141,7 @@ public class HomeController {
         return new ObjectResponse(true, String.format("Successfully get director %s", model.getName()), List.of(PersonRecordTool.createRecWithMovies(model)));
     }
 
+    @Cacheable(cacheNames = "writers")
     @GetMapping("/writers")
     public List<PersonRecord> allWriters() {
         return new WriterController(writerService).getAll();

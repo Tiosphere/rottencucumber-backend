@@ -3,7 +3,6 @@ package tk.rottencucumber.backend.service;
 import com.github.slugify.Slugify;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import tk.rottencucumber.backend.model.*;
 import tk.rottencucumber.backend.record.movie.MovieCreateForm;
@@ -44,7 +43,6 @@ public class MovieService {
         repository.delete(entity);
     }
 
-    @Cacheable(cacheNames = "movies")
     public Iterable<MovieModel> getAll() {
         return repository.findAll();
     }

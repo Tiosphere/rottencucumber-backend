@@ -3,7 +3,6 @@ package tk.rottencucumber.backend.service;
 import com.github.slugify.Slugify;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import tk.rottencucumber.backend.model.PlatformModel;
 import tk.rottencucumber.backend.repository.PlatformRepository;
@@ -50,7 +49,6 @@ public class PlatformService {
         repository.delete(entity);
     }
 
-    @Cacheable(cacheNames = "platform")
     public Iterable<PlatformModel> getAll() {
         return repository.findAll();
     }

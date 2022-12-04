@@ -3,7 +3,6 @@ package tk.rottencucumber.backend.service;
 import com.github.slugify.Slugify;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import tk.rottencucumber.backend.model.GenreModel;
 import tk.rottencucumber.backend.repository.GenreRepository;
@@ -50,7 +49,6 @@ public class GenreService {
         repository.delete(entity);
     }
 
-    @Cacheable(cacheNames = "genres")
     public Iterable<GenreModel> getAll() {
         return repository.findAll();
     }
