@@ -11,6 +11,7 @@ import tk.rottencucumber.backend.repository.WriterRepository;
 import tk.rottencucumber.backend.util.Slugifier;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 @Service
 public class WriterService {
@@ -39,7 +40,7 @@ public class WriterService {
             image = form.image().getBytes();
             type = form.image().getContentType();
         }
-        repository.save(new WriterModel(name, slug, type, image, form.birthPlace(), form.birthday(), form.description()));
+        repository.save(new WriterModel(name, slug, type, image, form.birthPlace(), LocalDate.of(form.year(), form.month(), form.day()), form.description()));
     }
 
     @CacheEvict(cacheNames = "writers")
@@ -59,14 +60,11 @@ public class WriterService {
         }
         model.setName(name);
         MultipartFile image = form.image();
-        if (image.isEmpty()) {
-            model.setImage(null);
-            model.setType(null);
-        } else {
+        if (!image.isEmpty()) {
             model.setImage(image.getBytes());
             model.setType(image.getContentType());
         }
-        model.setBirthday(form.birthday());
+        model.setBirthday(LocalDate.of(form.year(), form.month(), form.day()));
         model.setBirthPlace(form.birthPlace());
         model.setDescription(form.description());
         repository.save(model);

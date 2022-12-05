@@ -11,6 +11,7 @@ import tk.rottencucumber.backend.repository.*;
 import tk.rottencucumber.backend.util.Slugifier;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -118,7 +119,7 @@ public class MovieService {
                 name,
                 slug,
                 form.preview(),
-                form.release(),
+                LocalDate.of(form.year(), form.month(), form.day()),
                 language,
                 actors,
                 writers,
@@ -192,20 +193,18 @@ public class MovieService {
             entity.setSlug(slug);
         }
         entity.setName(name);
-        byte[] image = null;
-        String type = null;
+        byte[] image;
         if (!form.image().isEmpty()) {
             try {
                 image = form.image().getBytes();
             } catch (IOException e) {
                 return new CodeResponse(7, "Can't process the image please try again");
             }
-            type = form.image().getContentType();
+            entity.setImage(image);
+            entity.setType(form.image().getContentType());
         }
-        entity.setImage(image);
-        entity.setType(type);
         entity.setPreview(form.preview());
-        entity.setRelease(form.release());
+        entity.setRelease(LocalDate.of(form.year(), form.month(), form.day()));
         entity.setLanguage(language);
         entity.setActors(actors);
         entity.setDirectors(directors);

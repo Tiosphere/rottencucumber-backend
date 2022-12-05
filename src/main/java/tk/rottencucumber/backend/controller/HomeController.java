@@ -183,6 +183,6 @@ public class HomeController {
         if (!user.getUsername().equals(userModel.getUsername())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-        return new ObjectResponse(true, "Successfully retieve user", List.of(UserRecordTool.createRecWithFav(userModel)));
+        return new ObjectResponse(true, "Successfully retrieve user", List.of(UserRecordTool.createRecWithFav(userModel)));
     }
 }
