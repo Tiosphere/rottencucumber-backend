@@ -35,7 +35,7 @@ public class ActorService {
                 break;
             }
         }
-        if (!form.image().isEmpty()) {
+        if (form.image() != null) {
             image = form.image().getBytes();
             type = form.image().getContentType();
         }
@@ -59,11 +59,12 @@ public class ActorService {
         }
         model.setName(name);
         MultipartFile image = form.image();
-        if (!image.isEmpty()) {
+        if (image != null) {
             model.setImage(image.getBytes());
             model.setType(image.getContentType());
         }
         model.setBirthday(LocalDate.of(form.year(), form.month(), form.day()));
+        System.out.println(model.getBirthPlace() + form.birthPlace());
         model.setBirthPlace(form.birthPlace());
         model.setDescription(form.description());
         repository.save(model);

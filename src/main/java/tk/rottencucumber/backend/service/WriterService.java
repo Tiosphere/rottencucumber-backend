@@ -36,7 +36,7 @@ public class WriterService {
                 break;
             }
         }
-        if (!form.image().isEmpty()) {
+        if (form.image() != null) {
             image = form.image().getBytes();
             type = form.image().getContentType();
         }
@@ -60,7 +60,7 @@ public class WriterService {
         }
         model.setName(name);
         MultipartFile image = form.image();
-        if (!image.isEmpty()) {
+        if (image != null) {
             model.setImage(image.getBytes());
             model.setType(image.getContentType());
         }

@@ -107,7 +107,7 @@ public class MovieService {
         }
         byte[] image = null;
         String type = null;
-        if (!form.image().isEmpty()) {
+        if (form.image() != null) {
             try {
                 image = form.image().getBytes();
             } catch (IOException e) {
@@ -194,7 +194,7 @@ public class MovieService {
         }
         entity.setName(name);
         byte[] image;
-        if (!form.image().isEmpty()) {
+        if (form.image() != null) {
             try {
                 image = form.image().getBytes();
             } catch (IOException e) {
