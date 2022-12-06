@@ -63,6 +63,7 @@ public class HomeController {
         if (model == null) {
             return new ObjectResponse(false, "Can't find movie with this name", null);
         }
+        movieService.updateView(model);
         return new ObjectResponse(true, String.format("Successfully get movie %s", model.getName()), List.of(MovieRecordTool.createRecWithReview(model)));
     }
 

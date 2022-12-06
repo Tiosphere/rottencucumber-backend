@@ -48,6 +48,11 @@ public class MovieService {
         return repository.findAll();
     }
 
+    public void updateView(MovieModel entity) {
+        entity.setViews(entity.getViews() + 1);
+        repository.save(entity);
+    }
+
     @CacheEvict(cacheNames = "movies")
     public CodeResponse createMovie(MovieCreateForm form) {
         Set<ActorModel> actors = new HashSet<>();
