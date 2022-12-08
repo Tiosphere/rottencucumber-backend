@@ -162,6 +162,7 @@ public class HomeController {
     // require movie slug
     public BoolResponse review(@PathVariable String slug, ReviewCreateForm form) {
         MovieModel movie = movieService.findBySlug(slug);
+        System.out.println(form.comment());
         if (movie == null) {
             return new BoolResponse(false, "Movie doesn't not exist");
         }
