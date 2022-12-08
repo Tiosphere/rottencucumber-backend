@@ -4,9 +4,12 @@ import com.github.slugify.Slugify;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import tk.rottencucumber.backend.model.MovieModel;
 import tk.rottencucumber.backend.model.UserModel;
 import tk.rottencucumber.backend.repository.UserRepository;
 import tk.rottencucumber.backend.util.Slugifier;
+
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -55,6 +58,17 @@ public class UserService {
         }
         model.setUsername(username);
         model.setEmail(email);
+        repository.save(model);
+    }
+
+    public void addMovie(UserModel model, MovieModel movieModel) {
+        Set<MovieModel> fav = model.getMovies();
+        if (fav.contains(movieModel)) {
+            fav.remove(movieModel);
+        } else {
+            fav.add(movieModel);
+        }
+        model.setMovies(fav);
         repository.save(model);
     }
 

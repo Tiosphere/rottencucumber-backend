@@ -186,4 +186,22 @@ public class HomeController {
         }
         return new ObjectResponse(true, "Successfully retrieve user", List.of(UserRecordTool.createRecWithFav(userModel)));
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/fav/{slug}")
+    //movie slug
+    //this function use for both add and remove favourite
+    public BoolResponse favorite(@PathVariable String slug) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserModel userModel = userService.findByUsername(user.getUsername());
+        if (userModel == null) {
+            return new BoolResponse(false, "can't find this user");
+        }
+        MovieModel movie = movieService.findBySlug(slug);
+        if (movie == null) {
+            return new BoolResponse(false, "can't find this movie");
+        }
+        userService.addMovie(userModel, movie);
+        return new BoolResponse(true, "Successfully add this movie");
+    }
 }
