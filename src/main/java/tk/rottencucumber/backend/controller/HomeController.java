@@ -169,7 +169,7 @@ public class HomeController {
         if (user == null) {
             return new BoolResponse(false, "User doesn't not exist");
         }
-        reviewService.createReview(user, movie, form.rated(), form.comment());
+        reviewService.createReview(user, movie, form.comment());
         return new BoolResponse(true, "Successfully add new review");
     }
 

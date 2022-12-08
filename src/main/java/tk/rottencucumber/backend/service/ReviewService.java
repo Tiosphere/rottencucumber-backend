@@ -14,8 +14,8 @@ public class ReviewService {
         this.repository = repository;
     }
 
-    public void createReview(UserModel user, MovieModel movie, Integer rated, String comment) {
-        repository.save(new ReviewModel(user, movie, rated, comment));
+    public void createReview(UserModel user, MovieModel movie, String comment) {
+        repository.save(new ReviewModel(user, movie, comment));
     }
 
     public ReviewModel findById(Long id) {

@@ -12,7 +12,6 @@ public class ReviewRecordTool {
         return new ReviewRecord(
                 model.getId(),
                 UserRecordTool.createRecord(model.getUser()),
-                model.getRated(),
                 model.getComment()
         );
     }
