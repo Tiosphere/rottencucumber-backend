@@ -205,4 +205,24 @@ public class HomeController {
         movieService.addFav(movie, userModel);
         return new BoolResponse(true, "Successfully add this movie");
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/fav/check/{slug}")
+    //movie slug
+    //this function use for both add and remove favourite
+    public BoolResponse checkFavorite(@PathVariable String slug) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserModel userModel = userService.findByUsername(user.getUsername());
+        if (userModel == null) {
+            return new BoolResponse(false, "can't find this user");
+        }
+        MovieModel movie = movieService.findBySlug(slug);
+        if (movie == null) {
+            return new BoolResponse(false, "can't find this movie");
+        }
+        if (!userService.containMovie(userModel,movie)) {
+            return new BoolResponse(false, "can't find this movie in List");
+        }
+        return new BoolResponse(true, "Successfully add this movie");
+    }
 }

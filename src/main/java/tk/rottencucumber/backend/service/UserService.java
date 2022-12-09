@@ -67,9 +67,18 @@ public class UserService {
             fav.remove(movieModel);
         } else {
             fav.add(movieModel);
+            System.out.println(model.getMovies());
         }
         model.setMovies(fav);
         repository.save(model);
+    }
+
+    public boolean containMovie(UserModel model, MovieModel movieModel) {
+        Set<MovieModel> fav = model.getMovies();
+        if (fav.contains(movieModel)) {
+            return true;
+        }
+        return false;
     }
 
     public boolean checkPassword(UserModel user, String password) {
