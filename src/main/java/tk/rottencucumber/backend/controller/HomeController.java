@@ -202,7 +202,7 @@ public class HomeController {
         if (movie == null) {
             return new BoolResponse(false, "can't find this movie");
         }
-        userService.addMovie(userModel, movie);
+        movieService.addFav(movie, userModel);
         return new BoolResponse(true, "Successfully add this movie");
     }
 }

@@ -53,6 +53,17 @@ public class MovieService {
         repository.save(entity);
     }
 
+    public void addFav(MovieModel movieModel, UserModel userModel) {
+        Set<UserModel> users = movieModel.getUsers();
+        if (users.contains(userModel)) {
+            users.remove(userModel);
+        } else {
+            users.add(userModel);
+        }
+        movieModel.setUsers(users);
+        repository.save(movieModel);
+    }
+
     @CacheEvict(cacheNames = "movies")
     public CodeResponse createMovie(MovieCreateForm form) {
         Set<ActorModel> actors = new HashSet<>();
